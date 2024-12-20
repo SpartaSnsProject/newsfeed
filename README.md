@@ -1,4 +1,6 @@
 erDiagram
+```mermaid
+
     USER {
         Long id PK
         String username
@@ -53,3 +55,4 @@ erDiagram
     COMMENTLIKE {
         userId UNIQUE
     }
+```
