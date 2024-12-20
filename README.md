@@ -62,8 +62,8 @@ erDiagram
     }
     FRIEND {
         Long id PK
-        Long userId1 FK
-        Long userId2 FK
+        Long follower FK
+        Long following FK
     }
     POSTLIKE {
         Long id PK
@@ -239,13 +239,14 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "userId1": "Long",
-      "userId2": "Long"
+      "follower": "Long",
+      "following": "Long"
     }
     ```
 - **Response**:
     - **201 Created**: 생성된 친구 관계 정보
     - **400 Bad Request**: 유효하지 않은 입력
+    - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
 ### 4.2 친구 관계 조회
 - **GET** `/api/friends/{id}`
@@ -268,8 +269,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "postId": "Long",
-      "userId": "Long"
+      "postId": "Long"
     }
     ```
 - **Response**:
@@ -281,8 +281,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "commentId": "Long",
-      "userId": "Long"
+      "commentId": "Long"
     }
     ```
 - **Response**:
@@ -293,10 +292,12 @@ erDiagram
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
 
 ### 5.4 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
