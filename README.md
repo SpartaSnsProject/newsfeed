@@ -1,5 +1,6 @@
-erDiagram
 ```mermaid
+erDiagram
+
 
     USER {
         Long id PK
