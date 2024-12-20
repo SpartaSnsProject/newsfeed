@@ -31,9 +31,6 @@ erDiagram
         String password
         String displayName
         String bio
-        String location
-        String profileImageUrl
-        String bannerImageUrl
         LocalDate birthDate
         boolean protectedTweets
         int followersCount
@@ -78,6 +75,7 @@ erDiagram
 ```
 
 # API 명세서
+## 401은 global 설정 예정입니다.
 
 ## 1. 사용자(User) API
 
@@ -91,9 +89,6 @@ erDiagram
       "password": "string",
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "birthDate": "YYYY-MM-DD",
       "protectedTweets": "boolean"
     }
@@ -110,14 +105,11 @@ erDiagram
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
-- **Request Body**: (업데이트할 필드만 포함)
+- **Request Body**: 
     ```json
     {
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "protectedTweets": "boolean"
     }
     ```
@@ -130,6 +122,18 @@ erDiagram
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 사용자가 존재하지 않음
+
+### 1.5 비밀번호 변경
+- **PUT** `/api/password/{id}`
+- **Request Body**: 
+    ```json
+    {
+      "password": "string",
+    }
+    ```
+- **Response**:
+    - **204 No Content**: 패스워드 변경 성공
+    - **403 Not Found**: 사용자의 비밀번호가 다름
 
 ---
 
