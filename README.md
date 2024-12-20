@@ -71,6 +71,122 @@ erDiagram
     POSTLIKE {
         userId UNIQUE
     }
+
+API 명세서
+1. 사용자(User) API
+1.1 사용자 생성
+POST /api/users
+Request Body:
+- Response:
+201 Created: 생성된 사용자 정보
+400 Bad Request: 유효하지 않은 입력
+1.2 사용자 조회
+GET /api/users/{id}
+Response:
+200 OK: 사용자 정보
+404 Not Found: 사용자가 존재하지 않음
+1.3 사용자 업데이트
+PUT /api/users/{id}
+Request Body: (업데이트할 필드만 포함)
+- Response:
+200 OK: 업데이트된 사용자 정보
+404 Not Found: 사용자가 존재하지 않음
+1.4 사용자 삭제
+DELETE /api/users/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 사용자가 존재하지 않음
+---
+2. 게시글(Post) API
+2.1 게시글 생성
+POST /api/posts
+Request Body:
+- Response:
+201 Created: 생성된 게시글 정보
+400 Bad Request: 유효하지 않은 입력
+2.2 게시글 조회
+GET /api/posts/{id}
+Response:
+200 OK: 게시글 정보
+404 Not Found: 게시글이 존재하지 않음
+2.3 게시글 업데이트
+PUT /api/posts/{id}
+Request Body:
+- Response:
+200 OK: 업데이트된 게시글 정보
+404 Not Found: 게시글이 존재하지 않음
+2.4 게시글 삭제
+DELETE /api/posts/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 게시글이 존재하지 않음
+---
+3. 댓글(Comment) API
+3.1 댓글 생성
+POST /api/comments
+Request Body:
+- Response:
+201 Created: 생성된 댓글 정보
+400 Bad Request: 유효하지 않은 입력
+3.2 댓글 조회
+GET /api/comments/{id}
+Response:
+200 OK: 댓글 정보
+404 Not Found: 댓글이 존재하지 않음
+3.3 댓글 업데이트
+PUT /api/comments/{id}
+Request Body:
+- Response:
+200 OK: 업데이트된 댓글 정보
+404 Not Found: 댓글이 존재하지 않음
+3.4 댓글 삭제
+DELETE /api/comments/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 댓글이 존재하지 않음
+---
+4. 친구(Friend) API
+4.1 친구 관계 생성
+POST /api/friends
+Request Body:
+- Response:
+201 Created: 생성된 친구 관계 정보
+400 Bad Request: 유효하지 않은 입력
+4.2 친구 관계 조회
+GET /api/friends/{id}
+Response:
+200 OK: 친구 관계 정보
+404 Not Found: 친구 관계가 존재하지 않음
+4.3 친구 관계 삭제
+DELETE /api/friends/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 친구 관계가 존재하지 않음
+---
+5. 좋아요(Like) API
+5.1 게시글 좋아요 생성
+POST /api/postlikes
+Request Body:
+- Response:
+201 Created: 생성된 좋아요 정보
+400 Bad Request: 유효하지 않은 입력
+5.2 댓글 좋아요 생성
+POST /api/commentlikes
+Request Body:
+- Response:
+201 Created: 생성된 좋아요 정보
+400 Bad Request: 유효하지 않은 입력
+5.3 좋아요 삭제
+DELETE /api/postlikes/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 좋아요가 존재하지 않음
+5.4 댓글 좋아요 삭제
+DELETE /api/commentlikes/{id}
+Response:
+204 No Content: 삭제 성공
+404 Not Found: 좋아요가 존재하지 않음
+---
     COMMENTLIKE {
         userId UNIQUE
     }
