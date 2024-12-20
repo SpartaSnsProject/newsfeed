@@ -71,6 +71,7 @@ erDiagram
     POSTLIKE {
         userId UNIQUE
     }
+```
 
 API 명세서
 1. 사용자(User) API
