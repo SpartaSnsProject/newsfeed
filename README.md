@@ -15,7 +15,7 @@ Chore : 빌드 업무 수정, 패키지 매니저 수정
 ```
 
 # Wireframe
-![Wireframe](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Fcad0SX%2FbtsLp5Cjnkz%2FcbIBxyGsqIHwwc0NmrGw1K%2Fimg.png)
+![Wireframe](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Flpi77%2FbtsLrAOTBnk%2Faq47GazOEmXIauKxc3oH7K%2Fimg.png)
 
 
 # ERD
