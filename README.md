@@ -1,5 +1,17 @@
+## 목차
+1. [Commit Message Convention](#commit-message-convention)
+2. [Wireframe](#wireframe)
+3. [Erd](#erd)
+4. [API 명세서](#api-명세서)
+   1. [1. 사용자(User) API](#1-사용자user-api)
+   2. [2. 게시글(Post) API](#2-게시글post-api)
+   3. [3. 댓글(Comment) API](#3-댓글comment-api)
+   4. [4. 친구(Comment) API](#4-친구friend-api)
+   5. [5. 좋아요(Like) API](#5-좋아요like-api)
+
 # Commit Message Convention
 
+### 1.1 사용자 생성
 ```
 타입은 태그와 제목으로 구성되고, 태그는 영어로 쓰되 첫 문자는 대문자로 한다.
 태그 : 제목의 형태이며, :뒤에만 space가 있음에 유의한다.
