@@ -316,16 +316,40 @@ erDiagram
     - **201 Created**: 생성된 좋아요 정보
     - **400 Bad Request**: 유효하지 않은 입력
 
-### 5.3 좋아요 삭제
+### 5.3 게시글 좋아요 수 조회
+- **GET** `/api/postlikes/{post_id}`
+- **Response**:
+    - **200 OK**: 게시글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+### 5.4 댓글 좋아요 수 조회
+- **GET** `/api/commentlikes/{comment_id}`
+- **Response**:
+    - **200 OK**: 댓글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+### 5.5 게시글 좋아요 삭제
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
-    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
 
-### 5.4 댓글 좋아요 삭제
+### 5.6 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
-    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
