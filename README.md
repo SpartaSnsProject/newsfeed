@@ -17,13 +17,13 @@
 태그 : 제목의 형태이며, :뒤에만 space가 있음에 유의한다.
 내용은 간단하게 영어로 작성
 
-Feat : 새로운 기능 추가 
-Fix : 버그 수정 
-Docs : 문서 수정 
-Style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
-Refactor : 코드 리펙토링 
-Test : 테스트 코드, 리펙토링 테스트 코드 추가 
-Chore : 빌드 업무 수정, 패키지 매니저 수정
+feat : 새로운 기능 추가 
+fix : 버그 수정 
+docs : 문서 수정 
+style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
+refactor : 코드 리펙토링 
+test : 테스트 코드, 리펙토링 테스트 코드 추가 
+chore : 빌드 업무 수정, 패키지 매니저 수정
 ```
 
 # Wireframe
@@ -43,9 +43,6 @@ erDiagram
         String password
         String displayName
         String bio
-        String location
-        String profileImageUrl
-        String bannerImageUrl
         LocalDate birthDate
         boolean protectedTweets
         int followersCount
@@ -65,8 +62,8 @@ erDiagram
     }
     FRIEND {
         Long id PK
-        Long userId1 FK
-        Long userId2 FK
+        Long follower FK
+        Long following FK
     }
     POSTLIKE {
         Long id PK
@@ -90,6 +87,7 @@ erDiagram
 ```
 
 # API 명세서
+## 401은 global 설정 예정입니다.
 
 ## 1. 사용자(User) API
 
@@ -103,9 +101,6 @@ erDiagram
       "password": "string",
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "birthDate": "YYYY-MM-DD",
       "protectedTweets": "boolean"
     }
@@ -122,14 +117,11 @@ erDiagram
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
-- **Request Body**: (업데이트할 필드만 포함)
+- **Request Body**: 
     ```json
     {
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "protectedTweets": "boolean"
     }
     ```
@@ -142,6 +134,18 @@ erDiagram
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 사용자가 존재하지 않음
+
+### 1.5 비밀번호 변경
+- **PUT** `/api/password/{id}`
+- **Request Body**: 
+    ```json
+    {
+      "password": "string",
+    }
+    ```
+- **Response**:
+    - **204 No Content**: 패스워드 변경 성공
+    - **403 Not Found**: 사용자의 비밀번호가 다름
 
 ---
 
@@ -235,13 +239,14 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "userId1": "Long",
-      "userId2": "Long"
+      "follower": "Long",
+      "following": "Long"
     }
     ```
 - **Response**:
     - **201 Created**: 생성된 친구 관계 정보
     - **400 Bad Request**: 유효하지 않은 입력
+    - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
 ### 4.2 친구 관계 조회
 - **GET** `/api/friends/{id}`
@@ -264,8 +269,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "postId": "Long",
-      "userId": "Long"
+      "postId": "Long"
     }
     ```
 - **Response**:
@@ -277,8 +281,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "commentId": "Long",
-      "userId": "Long"
+      "commentId": "Long"
     }
     ```
 - **Response**:
@@ -289,10 +292,12 @@ erDiagram
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
 
 ### 5.4 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
