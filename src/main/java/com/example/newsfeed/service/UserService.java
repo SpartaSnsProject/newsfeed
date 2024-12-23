@@ -21,7 +21,7 @@ public class UserService {
 
     public UserSignupResponseDto signup(UserSignupRequestDto requestDto) {
         // 중복 검사
-        if (userRepository.existsByUsername(requestDto.getUsername())) {
+        if (userRepository.existsByDisplayName(requestDto.getDisplayName())) {
             throw new DuplicateUsernameException("이미 사용 중인 사용자명입니다.");
         }
         if (userRepository.existsByEmail(requestDto.getEmail())) {
