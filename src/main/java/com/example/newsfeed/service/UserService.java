@@ -8,6 +8,7 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.DuplicateUsernameException;
 import com.example.newsfeed.exception.user.DuplicateEmailException;
 import com.example.newsfeed.repository.UserRepository;
+import com.example.newsfeed.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     private final PassWordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     public UserSignupResponseDto signup(UserSignupRequestDto requestDto) {
         // 중복 검사
@@ -45,5 +47,18 @@ public class UserService {
         User savedUser = userRepository.save(user);
 
         return UserSignupResponseDto.from(savedUser);
+    }
+
+    @Transactional
+    public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        return UserLoginResponseDto.of(user, token);
     }
 }
