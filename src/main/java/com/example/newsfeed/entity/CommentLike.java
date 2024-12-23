@@ -12,10 +12,14 @@ public class CommentLike {
     @JoinColumn(name = "comment_id")
     Comment comment;
 
+    @Column(unique = true)
+    Long userId;
+
     public CommentLike() {
     }
 
-    public CommentLike(Comment comment) {
+    public CommentLike(Comment comment, Long userId) {
         this.comment = comment;
+        this.userId = userId;
     }
 }

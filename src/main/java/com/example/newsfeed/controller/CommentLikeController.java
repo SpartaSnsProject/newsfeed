@@ -1,6 +1,6 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.like.CommentLikeRequest;
+import com.example.newsfeed.dto.like.RequestComment;
 import com.example.newsfeed.service.CommentLikeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/commentlikes")
 public class CommentLikeController {
 
-    private Long hi;
     private final CommentLikeService commentLikeService;
 
     public CommentLikeController(CommentLikeService commentLikeService) {
@@ -19,15 +18,16 @@ public class CommentLikeController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addCommentLike(@RequestBody CommentLikeRequest request, HttpSession session) {
+    public ResponseEntity<Void> addCommentLike(@RequestBody RequestComment comment, HttpSession session) {
         Long id = (Long) session.getAttribute("id");
-        commentLikeService.addCommentLike(request);
+        commentLikeService.addCommentLike(id,comment);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCommentLike(@PathVariable String id) {
-
+    @DeleteMapping("{comment_id}")
+    public ResponseEntity<Void> deleteCommentLike(@PathVariable("comment_id") Long commentId,HttpSession session) {
+        Long id = (Long) session.getAttribute("id");
+        commentLikeService.deleteCommentLike(id,commentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
