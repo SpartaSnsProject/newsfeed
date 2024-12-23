@@ -10,32 +10,46 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name = "`user`")  // MySQL에서 user는 예약어이므로 백틱으로 감싸줍니다
 public class User extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "username")
     private String username;
 
-    @Column(unique = true, nullable = false)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(unique = true, nullable = false, length = 15)
+    @Column(name = "display_name", unique = true, nullable = false)
     private String displayName;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "bio", columnDefinition = "TEXT")
     private String bio;
 
+    @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @Column(name = "protected_tweets")
     private boolean protectedTweets = false;
 
+    @Column(name = "followers_count")
     private int followersCount = 0;
+
+    @Column(name = "following_count")
     private int followingCount = 0;
+
+    @Column(name = "tweets_count")
     private int tweetsCount = 0;
 
+    @Column(name = "is_deleted")
     private boolean isDeleted = false;
+
 
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;

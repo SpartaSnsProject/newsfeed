@@ -7,33 +7,48 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Base64;
 import java.util.Date;
-
 @Slf4j
 @Component
 public class JwtUtil {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
-    private Key key;
-    private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private SecretKey key;
 
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(secretKey);
+            this.key = Keys.hmacShaKeyFor(keyBytes);
+            log.info("JWT key initialized successfully");
+        } catch (Exception e) {
+            log.error("Failed to initialize JWT key", e);
+            throw new RuntimeException("Failed to initialize JWT key", e);
+        }
+    }
+
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public String generateToken(String username) {
         Date now = new Date();
+        long tokenValidTime = 24 * 60 * 60 * 1000L;  // 24시간
 
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(now)
-                .setExpiration(new Date(now.getTime() + 86400000)) // 24시간
-                .signWith(key, signatureAlgorithm)
+                .setExpiration(new Date(now.getTime() + tokenValidTime))
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -44,18 +59,12 @@ public class JwtUtil {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (Exception e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
-            return false;
+        } catch (ExpiredJwtException e) {
+            log.error("Token expired: {}", e.getMessage());
+            throw new IllegalArgumentException("토큰이 만료되었습니다.");
+        } catch (JwtException e) {
+            log.error("Invalid token: {}", e.getMessage());
+            throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
-    }
-
-    public String getUsernameFromToken(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
     }
 }
