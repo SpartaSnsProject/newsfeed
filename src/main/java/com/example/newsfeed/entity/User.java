@@ -14,7 +14,6 @@ public class User extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false, length = 15)
     private String username;
 
     @Column(unique = true, nullable = false)
@@ -23,6 +22,7 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(unique = true, nullable = false, length = 15)
     private String displayName;
 
     @Column(columnDefinition = "TEXT")
