@@ -29,7 +29,7 @@ public class FriendController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/following")
     public ResponseEntity<Map<String, List<ResponseFriend>>> findFollowingUser(HttpSession session) {
         Long followId = (Long) session.getAttribute("id");
         List<ResponseFriend> following = friendSerivce.getFollowing(followId);
@@ -38,7 +38,7 @@ public class FriendController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/follower")
     public ResponseEntity<Map<String, List<ResponseFriend>>> findFollower(HttpSession session) {
         Long followingId = (Long) session.getAttribute("id");
         List<ResponseFriend> follower = friendSerivce.getFollower(followingId);
