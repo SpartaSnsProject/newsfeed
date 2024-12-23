@@ -1,6 +1,7 @@
 package com.example.newsfeed.service;
 
 import com.example.newsfeed.dto.RequestUser;
+import com.example.newsfeed.dto.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 
@@ -11,8 +12,8 @@ public interface FriendService {
 
     void deleteFriend(Long followId, Long followingId);
 
-    List<Friend> getFollowing(Long followId);
+    List<ResponseFriend> getFollowing(Long followId);
 
-    List<Friend> getFollower(Long followingId);
+    List<ResponseFriend> getFollower(Long followingId);
 
 }

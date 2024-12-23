@@ -1,6 +1,7 @@
 package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.RequestUser;
+import com.example.newsfeed.dto.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.service.FriendService;
@@ -29,16 +30,17 @@ public class FriendController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Friend>> findFollowingUser(HttpSession session) {
+    public ResponseEntity<List<ResponseFriend>> findFollowingUser(HttpSession session) {
         Long followId = (Long) session.getAttribute("id");
-        List<Friend> following = friendSerivce.getFollowing(followId);
+        List<ResponseFriend> following = friendSerivce.getFollowing(followId);
         return new ResponseEntity<>(following, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Friend>> findFollower(HttpSession session) {
+    public ResponseEntity<List<ResponseFriend>> findFollower(HttpSession session) {
         Long followingId = (Long) session.getAttribute("id");
-        friendSerivce.getFollower(followingId);
+        List<ResponseFriend> follower = friendSerivce.getFollower(followingId);
+        return new ResponseEntity<>(follower, HttpStatus.OK);
     }
 
     @DeleteMapping

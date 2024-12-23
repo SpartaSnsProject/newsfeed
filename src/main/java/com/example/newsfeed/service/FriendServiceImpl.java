@@ -1,11 +1,13 @@
 package com.example.newsfeed.service;
 
 import com.example.newsfeed.dto.RequestUser;
+import com.example.newsfeed.dto.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class FriendServiceImpl implements FriendService{
     FriendRepository friendRepository;
@@ -24,15 +26,19 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public List<Friend> getFollowing(Long followId) {
+    public List<ResponseFriend> getFollowing(Long followId) {
         User followUser = userRepository.findById(followId).orElseThrow(() -> new RuntimeException("유저 못찾음"));
-        return friendRepository.findByFollowerUser(followUser);
+        return friendRepository.findByFollowerUser(followUser).stream()
+                .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Friend> getFollower(Long followingId) {
+    public List<ResponseFriend> getFollower(Long followingId) {
         User followingUser = userRepository.findById(followingId).orElseThrow(() -> new RuntimeException("유저 못찾음"));
-        return friendRepository.findByFollowingUser(followingUser);
+        return friendRepository.findByFollowingUser(followingUser).stream()
+                .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
+                .collect(Collectors.toList());
     }
 
     @Override
