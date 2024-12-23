@@ -2,15 +2,15 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.RequestUser;
 import com.example.newsfeed.dto.ResponseFriend;
-import com.example.newsfeed.entity.Friend;
-import com.example.newsfeed.entity.User;
 import com.example.newsfeed.service.FriendService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/follow")
@@ -30,17 +30,21 @@ public class FriendController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseFriend>> findFollowingUser(HttpSession session) {
+    public ResponseEntity<Map<String, List<ResponseFriend>>> findFollowingUser(HttpSession session) {
         Long followId = (Long) session.getAttribute("id");
         List<ResponseFriend> following = friendSerivce.getFollowing(followId);
-        return new ResponseEntity<>(following, HttpStatus.OK);
+        Map<String, List<ResponseFriend>> response = new HashMap<>();
+        response.put("followingUsers", following);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ResponseFriend>> findFollower(HttpSession session) {
+    public ResponseEntity<Map<String, List<ResponseFriend>>> findFollower(HttpSession session) {
         Long followingId = (Long) session.getAttribute("id");
         List<ResponseFriend> follower = friendSerivce.getFollower(followingId);
-        return new ResponseEntity<>(follower, HttpStatus.OK);
+        Map<String, List<ResponseFriend>> response = new HashMap<>();
+        response.put("followers", follower);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping
