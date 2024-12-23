@@ -1,4 +1,4 @@
-package com.example.newsfeed.friend;
+package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
 

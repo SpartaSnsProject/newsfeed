@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/commentlikes")
+@RequestMapping("/comment_likes")
 public class CommentLikeController {
 
     private final CommentLikeService commentLikeService;
@@ -22,6 +22,12 @@ public class CommentLikeController {
         Long id = (Long) session.getAttribute("id");
         commentLikeService.addCommentLike(id,comment);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("{comment_id}")
+    public ResponseEntity<Integer> getCommentLIke(@PathVariable("comment_id") Long commentId) {
+        int commentLike = commentLikeService.getCommentLike(commentId);
+        return new ResponseEntity<>(commentLike,HttpStatus.OK);
     }
 
     @DeleteMapping("{comment_id}")

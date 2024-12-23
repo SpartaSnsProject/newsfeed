@@ -12,4 +12,15 @@ public class PostLike {
     @ManyToOne
     @JoinColumn(name = "post_id")
     Post post;
+
+    @Column(unique = true)
+    Long userId;
+
+    public PostLike() {
+    }
+
+    public PostLike(Post post, Long userId) {
+        this.post = post;
+        this.userId = userId;
+    }
 }
