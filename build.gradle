@@ -31,7 +31,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    //https://github.com/swagger-api/swagger-ui
+    implementation 'at.favre.lib:bcrypt:0.10.2'
+    //http://localhost:8080/swagger-ui/
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
 }
 

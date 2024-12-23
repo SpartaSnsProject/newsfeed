@@ -1,6 +1,7 @@
 package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,7 +28,6 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String bio;
 
-    private String location;
     private LocalDate birthDate;
     private boolean protectedTweets = false;
 
@@ -39,5 +39,22 @@ public class User extends BaseEntity {
 
     public void setIsDeleted(boolean isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+
+    @Builder
+    private User(String username, String email, String password, String displayName,
+                 String bio, LocalDate birthDate) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.displayName = displayName;
+        this.bio = bio;
+        this.birthDate = birthDate;
+        this.protectedTweets = false;
+        this.followersCount = 0;
+        this.followingCount = 0;
+        this.tweetsCount = 0;
+        this.isDeleted = false;
     }
 }
