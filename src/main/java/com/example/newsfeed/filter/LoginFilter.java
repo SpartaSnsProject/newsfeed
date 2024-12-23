@@ -13,8 +13,8 @@ import java.util.List;
 public class LoginFilter implements Filter {
     // 인증이 필요없는 경로들을 추가
     private static final List<String> EXCLUDED_PATHS = Arrays.asList(
-            "/users/login",
-            "/users/signup",
+            "/user/login",
+            "/user/signup",
             "/swagger-ui/**",        // Swagger UI 경로
             "/v3/api-docs/**",       // Swagger API docs
             "/swagger-resources/**",  // Swagger 리소스
