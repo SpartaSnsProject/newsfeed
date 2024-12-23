@@ -41,7 +41,7 @@ public class LoginFilter implements Filter {
 
         // 세션 체크
         HttpSession session = httpRequest.getSession(false);
-        if (session == null || session.getAttribute("userId") == null) {
+        if (session == null || session.getAttribute("id") == null) {
             httpResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
