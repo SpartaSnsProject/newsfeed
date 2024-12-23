@@ -1,6 +1,6 @@
 package com.example.newsfeed.config;
 
-import com.example.jpatodolists.filter.LoginFilter;
+import com.example.newsfeed.filter.LoginFilter;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
