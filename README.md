@@ -1,5 +1,17 @@
+## 목차
+1. [Commit Message Convention](#commit-message-convention)
+2. [Wireframe](#wireframe)
+3. [Erd](#erd)
+4. [API 명세서](#api-명세서)
+   1. [1. 사용자(User) API](#1-사용자user-api)
+   2. [2. 게시글(Post) API](#2-게시글post-api)
+   3. [3. 댓글(Comment) API](#3-댓글comment-api)
+   4. [4. 친구(Comment) API](#4-친구friend-api)
+   5. [5. 좋아요(Like) API](#5-좋아요like-api)
+
 # Commit Message Convention
 
+### 1.1 사용자 생성
 ```
 타입은 태그와 제목으로 구성되고, 태그는 영어로 쓰되 첫 문자는 대문자로 한다.
 태그 : 제목의 형태이며, :뒤에만 space가 있음에 유의한다.
@@ -13,6 +25,10 @@ Refactor : 코드 리펙토링
 Test : 테스트 코드, 리펙토링 테스트 코드 추가 
 Chore : 빌드 업무 수정, 패키지 매니저 수정
 ```
+
+# Wireframe
+![Wireframe](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2Flpi77%2FbtsLrAOTBnk%2Faq47GazOEmXIauKxc3oH7K%2Fimg.png)
+
 
 # ERD
 
@@ -71,7 +87,212 @@ erDiagram
     POSTLIKE {
         userId UNIQUE
     }
-    COMMENTLIKE {
-        userId UNIQUE
-    }
 ```
+
+# API 명세서
+
+## 1. 사용자(User) API
+
+### 1.1 사용자 생성
+- **POST** `/api/users`
+- **Request Body**:
+    ```json
+    {
+      "username": "string",
+      "email": "string",
+      "password": "string",
+      "displayName": "string",
+      "bio": "string",
+      "location": "string",
+      "profileImageUrl": "string",
+      "bannerImageUrl": "string",
+      "birthDate": "YYYY-MM-DD",
+      "protectedTweets": "boolean"
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 사용자 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 1.2 사용자 조회
+- **GET** `/api/users/{id}`
+- **Response**:
+    - **200 OK**: 사용자 정보
+    - **404 Not Found**: 사용자가 존재하지 않음
+
+### 1.3 사용자 업데이트
+- **PUT** `/api/users/{id}`
+- **Request Body**: (업데이트할 필드만 포함)
+    ```json
+    {
+      "displayName": "string",
+      "bio": "string",
+      "location": "string",
+      "profileImageUrl": "string",
+      "bannerImageUrl": "string",
+      "protectedTweets": "boolean"
+    }
+    ```
+- **Response**:
+    - **200 OK**: 업데이트된 사용자 정보
+    - **404 Not Found**: 사용자가 존재하지 않음
+
+### 1.4 사용자 삭제
+- **DELETE** `/api/users/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 사용자가 존재하지 않음
+
+---
+
+## 2. 게시글(Post) API
+
+### 2.1 게시글 생성
+- **POST** `/api/posts`
+- **Request Body**:
+    ```json
+    {
+      "content": "string",
+      "userId": "Long"
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 게시글 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 2.2 게시글 조회
+- **GET** `/api/posts/{id}`
+- **Response**:
+    - **200 OK**: 게시글 정보
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+### 2.3 게시글 업데이트
+- **PUT** `/api/posts/{id}`
+- **Request Body**:
+    ```json
+    {
+      "content": "string"
+    }
+    ```
+- **Response**:
+    - **200 OK**: 업데이트된 게시글 정보
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+### 2.4 게시글 삭제
+- **DELETE** `/api/posts/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+---
+
+## 3. 댓글(Comment) API
+
+### 3.1 댓글 생성
+- **POST** `/api/comments`
+- **Request Body**:
+    ```json
+    {
+      "postId": "Long",
+      "userName": "string",
+      "replyCount": 0
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 댓글 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 3.2 댓글 조회
+- **GET** `/api/comments/{id}`
+- **Response**:
+    - **200 OK**: 댓글 정보
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+### 3.3 댓글 업데이트
+- **PUT** `/api/comments/{id}`
+- **Request Body**:
+    ```json
+    {
+      "replyCount": "Long"
+    }
+    ```
+- **Response**:
+    - **200 OK**: 업데이트된 댓글 정보
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+### 3.4 댓글 삭제
+- **DELETE** `/api/comments/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+---
+
+## 4. 친구(Friend) API
+
+### 4.1 친구 관계 생성
+- **POST** `/api/friends`
+- **Request Body**:
+    ```json
+    {
+      "userId1": "Long",
+      "userId2": "Long"
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 친구 관계 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 4.2 친구 관계 조회
+- **GET** `/api/friends/{id}`
+- **Response**:
+    - **200 OK**: 친구 관계 정보
+    - **404 Not Found**: 친구 관계가 존재하지 않음
+
+### 4.3 친구 관계 삭제
+- **DELETE** `/api/friends/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 친구 관계가 존재하지 않음
+
+---
+
+## 5. 좋아요(Like) API
+
+### 5.1 게시글 좋아요 생성
+- **POST** `/api/postlikes`
+- **Request Body**:
+    ```json
+    {
+      "postId": "Long",
+      "userId": "Long"
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 좋아요 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 5.2 댓글 좋아요 생성
+- **POST** `/api/commentlikes`
+- **Request Body**:
+    ```json
+    {
+      "commentId": "Long",
+      "userId": "Long"
+    }
+    ```
+- **Response**:
+    - **201 Created**: 생성된 좋아요 정보
+    - **400 Bad Request**: 유효하지 않은 입력
+
+### 5.3 좋아요 삭제
+- **DELETE** `/api/postlikes/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 좋아요가 존재하지 않음
+
+### 5.4 댓글 좋아요 삭제
+- **DELETE** `/api/commentlikes/{id}`
+- **Response**:
+    - **204 No Content**: 삭제 성공
+    - **404 Not Found**: 좋아요가 존재하지 않음
