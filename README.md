@@ -235,12 +235,11 @@ erDiagram
 ## 4. 친구(Friend) API
 
 ### 4.1 친구 관계 생성
-- **POST** `/api/friends`
+- **POST** `/api/follow`
 - **Request Body**:
     ```json
     {
-      "follower": "Long",
-      "following": "Long"
+      "id": "Long" 
     }
     ```
 - **Response**:
@@ -248,18 +247,47 @@ erDiagram
     - **400 Bad Request**: 유효하지 않은 입력
     - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
-### 4.2 친구 관계 조회
-- **GET** `/api/friends/{id}`
+### 4.2 내가 팔로우하는 사용자 조회
+- **GET** `/api/follow/following`
 - **Response**:
-    - **200 OK**: 친구 관계 정보
-    - **404 Not Found**: 친구 관계가 존재하지 않음
+    - **200 OK**: 내가 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followingUsers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 팔로우하는 사용자가 존재하지 않음
 
-### 4.3 친구 관계 삭제
-- **DELETE** `/api/friends/{id}`
+### 4.3 나를 팔로우하는 사용자 조회
+- **GET** `/api/follow/follower`
+- **Response**:
+    - **200 OK**: 나를 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 나를 팔로우하는 사용자가 존재하지 않음
+
+### 4.4 친구 관계 삭제
+- **DELETE** `/api/follow`
+- **Request Header**:
+    - `Authorization`: 팔로우할 사용자의 ID
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 친구 관계가 존재하지 않음
-
 ---
 
 ## 5. 좋아요(Like) API
