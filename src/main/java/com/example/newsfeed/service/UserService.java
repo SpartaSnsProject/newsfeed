@@ -136,6 +136,11 @@ public class UserService {
         return UserProfileResponseDto.from(user);
     }
 
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+    }
+
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));

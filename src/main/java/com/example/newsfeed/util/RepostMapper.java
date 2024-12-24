@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 public class RepostMapper {
     public static RepostResponseDto toDto(Post post, Post originalPost) {
         return new RepostResponseDto(
+                post.getPostId(),
                 post.getUser().getUsername(),
                 post.getUser().getDisplayName(),
                 post.getContent(),

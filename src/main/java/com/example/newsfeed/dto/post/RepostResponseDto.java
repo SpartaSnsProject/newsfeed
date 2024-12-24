@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class RepostResponseDto {
 
+    private Long rePostId;
     private String userName;
     private String displayName;
     private String content;

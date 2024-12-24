@@ -1,6 +1,5 @@
 package com.example.newsfeed.dto.post;
 
-import com.example.newsfeed.entity.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

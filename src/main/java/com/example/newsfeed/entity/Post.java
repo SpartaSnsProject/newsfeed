@@ -46,8 +46,8 @@ public class Post extends BaseEntity{
         this.content = content;
     }
 
-    public Post repost(User user, String repostContent) {
-        return new Post(user, repostContent, this);
+    public Post repost(User user, String content) {
+        return new Post(user, content, this);
     }
 
     public boolean isRepost() {

@@ -30,11 +30,13 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(e.getMessage()));
     }
 
-    @ExceptionHandler(Exception.class)
+   /** @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAllException(Exception e) {
         return ResponseEntity.internalServerError()
                 .body(ApiResponse.error("서버 내부 오류가 발생했습니다."));
     }
+   */
+
     //유저로그인 에러반환
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<ApiResponse<Void>> handleLoginFailed(LoginFailedException e) {
@@ -60,9 +62,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.error(e.getMessage()));
     }
+   /*
+  *
     @ExceptionHandler(PostNotFoundException.class)
     public ResponseEntity<String> handleAuthenticationException(PostNotFoundException ex) {
         return ResponseEntity.status(ex.getHttpStatus())
                 .body(ex.getFailReason());
     }
+    */
+
 }
