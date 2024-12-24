@@ -1,6 +1,7 @@
 package com.example.newsfeed.exception;
 
 import com.example.newsfeed.dto.common.ApiResponse;
+import com.example.newsfeed.exception.post.PostNotFoundException;
 import com.example.newsfeed.exception.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -58,5 +59,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ApiResponse.error(e.getMessage()));
+    }
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<String> handleAuthenticationException(PostNotFoundException ex) {
+        return ResponseEntity.status(ex.getHttpStatus())
+                .body(ex.getFailReason());
     }
 }
