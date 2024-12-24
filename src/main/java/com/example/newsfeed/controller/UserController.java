@@ -2,7 +2,9 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.common.ApiResponse;
 import com.example.newsfeed.dto.user.*;
+import com.example.newsfeed.exception.user.ForbiddenException;
 import com.example.newsfeed.exception.user.UnauthorizedException;
+import com.example.newsfeed.exception.user.UserNotFoundException;
 import com.example.newsfeed.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -71,5 +74,34 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success("프로필 조회에 성공했습니다.", responseDto));
+    }
+
+    @Operation(
+            summary = "프로필 수정",
+            description = "사용자 프로필을 수정합니다.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
+    @PutMapping("/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<UserProfileResponseDto>> updateProfile(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserUpdateRequestDto requestDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            UserProfileResponseDto responseDto = userService.updateProfile(userId, requestDto, userDetails.getUsername());
+            return ResponseEntity.ok(ApiResponse.success("프로필이 성공적으로 수정되었습니다.", responseDto));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (ForbiddenException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(e.getMessage()));
+        }
     }
 }

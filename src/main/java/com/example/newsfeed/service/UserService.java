@@ -5,9 +5,7 @@ package com.example.newsfeed.service;
 import com.example.newsfeed.config.PassWordEncoder;
 import com.example.newsfeed.dto.user.*;
 import com.example.newsfeed.entity.User;
-import com.example.newsfeed.exception.user.DuplicateUsernameException;
-import com.example.newsfeed.exception.user.DuplicateEmailException;
-import com.example.newsfeed.exception.user.UserNotFoundException;
+import com.example.newsfeed.exception.user.*;
 import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -88,5 +86,40 @@ public class UserService {
         log.info("Created response DTO: {}", responseDto);
 
         return responseDto;
+    }
+    @Transactional
+    public UserProfileResponseDto updateProfile(Long userId, UserUpdateRequestDto requestDto, String email) {
+        // 1. 대상 사용자 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        // 2. 현재 로그인한 사용자 확인
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
+
+        // 3. 권한 확인
+        if (!currentUser.getId().equals(userId)) {
+            throw new ForbiddenException("프로필 수정 권한이 없습니다.");
+        }
+
+        // 4. displayName 중복 검사 (변경하려는 경우에만)
+        if (requestDto.getDisplayName() != null &&
+                !requestDto.getDisplayName().equals(user.getDisplayName()) &&
+                userRepository.existsByDisplayName(requestDto.getDisplayName())) {
+            throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
+        }
+
+        // 5. 필드 업데이트 (null이 아닌 필드만)
+        if (requestDto.getDisplayName() != null) {
+            user.updateDisplayName(requestDto.getDisplayName());
+        }
+        if (requestDto.getBio() != null) {
+            user.updateBio(requestDto.getBio());
+        }
+        if (requestDto.getProtectedTweets() != null) {
+            user.updateProtectedTweets(requestDto.getProtectedTweets());
+        }
+
+        return UserProfileResponseDto.from(user);
     }
 }

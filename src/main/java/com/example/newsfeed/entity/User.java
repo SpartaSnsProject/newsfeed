@@ -71,4 +71,16 @@ public class User extends BaseEntity {
         this.tweetsCount = 0;
         this.isDeleted = false;
     }
+
+    public void updateDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void updateBio(String bio) {
+        this.bio = bio;
+    }
+
+    public void updateProtectedTweets(boolean protectedTweets) {
+        this.protectedTweets = protectedTweets;
+    }
 }
