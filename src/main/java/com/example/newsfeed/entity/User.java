@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 
@@ -47,13 +48,10 @@ public class User extends BaseEntity {
     @Column(name = "tweets_count")
     private int tweetsCount = 0;
 
+    @Setter
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
-
-    public void setIsDeleted(boolean isDeleted) {
-        this.isDeleted = isDeleted;
-    }
 
 
     @Builder
