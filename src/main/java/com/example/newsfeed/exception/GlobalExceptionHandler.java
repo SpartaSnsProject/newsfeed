@@ -16,19 +16,24 @@ import java.util.Map;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+    //    과정 중 발생하는 예외는 GlobalExceptionHandler가 처리합니다
+    //    모든 응답은 ApiResponse 형식으로 통일되어 반환됩니다
 
+    // 사용자명 중복 예외 처리
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<ApiResponse<Void>> handleDuplicateUsername(DuplicateUsernameException e) {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error(e.getMessage()));
     }
 
+    // 이메일 중복 예외 처리
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ApiResponse<Void>> handleDuplicateEmail(DuplicateEmailException e) {
         return ResponseEntity.badRequest()
                 .body(ApiResponse.error(e.getMessage()));
     }
 
+    // 기타 모든 예외 처리
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAllException(Exception e) {
         return ResponseEntity.internalServerError()
