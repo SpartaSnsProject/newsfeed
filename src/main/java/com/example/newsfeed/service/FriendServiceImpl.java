@@ -5,10 +5,13 @@ import com.example.newsfeed.dto.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;
+import com.example.newsfeed.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Service
 public class FriendServiceImpl implements FriendService{
     FriendRepository friendRepository;
 
@@ -19,33 +22,35 @@ public class FriendServiceImpl implements FriendService{
     }
 
     @Override
-    public void addFriend(RequestUser RequestFollowingUser, Long followUserId) {
-        User followUser = userRepository.findById(followUserId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+    public void addFriend(RequestUser RequestFollowingUser, String followUserEmail) {
+        User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
         User followingUser = userRepository.findById(RequestFollowingUser.getId()).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
         friendRepository.save(new Friend(followUser, followingUser));
     }
 
     @Override
-    public List<ResponseFriend> getFollowing(Long followId) {
-        User followUser = userRepository.findById(followId).orElseThrow(() -> new RuntimeException("유저 못찾음"));
-        return friendRepository.findByFollowerUser(followUser).stream()
+    public List<ResponseFriend> getFollowing(String followEmail) {
+        User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
+        return friendRepository.findAllByFollower(followUser).stream()
                 .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ResponseFriend> getFollower(Long followingId) {
-        User followingUser = userRepository.findById(followingId).orElseThrow(() -> new RuntimeException("유저 못찾음"));
-        return friendRepository.findByFollowingUser(followingUser).stream()
+    public List<ResponseFriend> getFollower(String followingEmail) {
+        User followingUser = userRepository.findByEmail(followingEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
+        return
+                friendRepository.findAllByFollowing(followingUser)
+                        .stream()
                 .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteFriend(Long followId, Long followingId) {
-        User followUser = userRepository.findById(followId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+    public void deleteFriend(String followEmail, Long followingId) {
+        User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
         User followingUser = userRepository.findById(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
-        friendRepository.deleteByFollowerUserAndFollowingUser(followUser,followingUser);
+        friendRepository.deleteByFollowerAndFollowing(followUser,followingUser);
     }
 }

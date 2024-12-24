@@ -18,7 +18,12 @@ public class CommentLike {
     public CommentLike() {
     }
 
-    public CommentLike(Comment comment, Long userId) {
+    public CommentLike(Long id) {
+        this.id = id;
+    }
+
+
+    public CommentLike(Comment comment,Long userId) {
         this.comment = comment;
         this.userId = userId;
     }

@@ -5,9 +5,11 @@ import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.PostLike;
 import com.example.newsfeed.repository.PostLikeRepository;
 import com.example.newsfeed.repository.PostRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class PostLikeServiceImpl implements PostLikeService{
 
     PostLikeRepository postLikeRepository;

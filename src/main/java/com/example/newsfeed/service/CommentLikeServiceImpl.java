@@ -5,6 +5,7 @@ import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.CommentLike;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.CommentLikeRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +15,9 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     CommentLikeRepository commentLikeRepository;
     CommentRepository commentRepository;
 
-    public CommentLikeServiceImpl(CommentLikeRepository likeRepository) {
-        this.commentLikeRepository = likeRepository;
+    public CommentLikeServiceImpl(CommentLikeRepository commentLikeRepository, CommentRepository commentRepository) {
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentRepository = commentRepository;
     }
 
 
