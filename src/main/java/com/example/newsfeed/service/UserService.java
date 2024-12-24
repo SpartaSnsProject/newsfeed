@@ -201,12 +201,12 @@ public class UserService {
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
 
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
 
-    public Long findUserIdByUsername(String username) {
-        return userRepository.findUserIdByUsername(username);
+    public Long findUserIdByEmail(String email) {
+        return userRepository.findUserIdByEmail(email);
     }
 }

@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,22 +24,26 @@ public class PostController {
 
     private final PostService postService;
 
-
+    @Operation(
+            summary = "포스트 생성",
+            description = "로그인한 유저의 포스트를 생성합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostResponseDto> createPost(
             @Valid @RequestBody PostRequestDto requestDto,
-            @RequestHeader("Authorization") String authHeader
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        PostResponseDto responseDto = postService.createPost(requestDto, authHeader);
-
+        String email = userDetails.getUsername();
+        PostResponseDto responseDto = postService.createPost(requestDto, email);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
     @Operation(
-            summary = "포스트 조회(by postId)",
-            description = "사용자 ID로 프로필을 조회합니다.",
-            security = { @SecurityRequirement(name = "Bearer Authentication") }
+            summary = "포스트 단건 조회",
+            description = "포스트의 고유 식별자로 포스트를 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
     )
     @GetMapping("/{postId}")
     @PreAuthorize("isAuthenticated()")
@@ -45,46 +51,68 @@ public class PostController {
             @PathVariable Long postId
     ) {
         PostResponseDto responseDto = postService.findByPostId(postId);
-
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
-   @GetMapping("/display/{displayName}")
-   @PreAuthorize("isAuthenticated()")
-   public ResponseEntity<PostListResponseDto> findByDisplayId(
-           @PathVariable String displayName
-   ) {
+    @Operation(
+            summary = "포스트 목록 조회",
+            description = "유저 핸들아이디로 포스트 목록를 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
+    @GetMapping("/display/{displayName}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PostListResponseDto> findByDisplayId(
+            @PathVariable String displayName
+    ) {
         PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findByDisplayName(displayName));
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
-   }
+    }
 
-   @GetMapping
-   @PreAuthorize("isAuthenticated()")
-   public ResponseEntity<PostListResponseDto> findAllPosts(
-           @RequestHeader("Authorization") String authHeader
-   ) {
-        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findAllPosts(authHeader));
+    @Operation(
+            summary = "포스트 목록 조회",
+            description = "로그인한 유저의 포스트 목록을 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
+    @GetMapping
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PostListResponseDto> findAllPosts(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String email = userDetails.getUsername();
+        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findAllPosts(email));
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
-   }
+    }
 
+    @Operation(
+            summary = "포스트 수정",
+            description = "포스트 고유 식별자로 포스트를 수정합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
     @PutMapping("/{postId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<PostResponseDto> updatePost(
             @Valid @RequestBody PostRequestDto requestDto,
             @PathVariable Long postId,
-            @RequestHeader("Authorization") String authHeader
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        PostResponseDto responseDto = postService.updatePost(requestDto, postId, authHeader);
+        String email = userDetails.getUsername();
+        PostResponseDto responseDto = postService.updatePost(requestDto, postId, email);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "포스트 삭제",
+            description = "포스트의 고유 식별자로 포스트를 삭제합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
     @DeleteMapping("/{postId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> deletePst(
             @PathVariable Long postId,
-            @RequestHeader("Authorization") String authHeader
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        postService.deletePost(postId, authHeader);
+        String email = userDetails.getUsername();
+        postService.deletePost(postId, email);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

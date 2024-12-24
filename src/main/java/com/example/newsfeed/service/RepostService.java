@@ -18,40 +18,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class RepostService {
 
-    private final JwtUtil jwtUtil;
     private final UserService userService;
     private final PostService postService;
     private final PostRepository postRepository;
 
-    public RepostResponseDto toggleRepost(PostRequestDto requestDto, String authHeader, Long originalPostId) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public RepostResponseDto toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
+        Long userId = getUserIdByEmail(email);
         Post originalPost = postService.getPostById(originalPostId);
         User user = userService.findById(userId);
         Post repost = originalPost.repost(user, requestDto.getContent());
 
         postService.save(repost);
+
         return RepostMapper.toDto(repost, originalPost);
     }
 
-    public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String email) {
+        Long userId = getUserIdByEmail(email);
         Post repost = postService.getPostById(repostId);
         validatePostOwnership(repost, userId);
 
         repost.updatePost(requestDto.getContent());
+
         return RepostMapper.toDto(repost,repost.getOriginalPost());
     }
 
-    public void deleteRepost(Long repostId, String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public void deleteRepost(Long repostId, String email) {
+        Long userId = getUserIdByEmail(email);
         Post repost = postService.getPostById(repostId);
+
         postService.delete(repost);
+    }
+
+    private Long getUserIdByEmail(String email) {
+        return userService.findUserIdByEmail(email);
     }
 
     private void validatePostOwnership(Post post, Long userId) {

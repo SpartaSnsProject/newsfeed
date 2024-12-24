@@ -24,14 +24,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
-    public PostResponseDto createPost(PostRequestDto requestDto, String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-
-        User user = getUserById(username);
+    public PostResponseDto createPost(PostRequestDto requestDto, String email) {
+        User user = getUserByEmail(email);
         Post post = requestDto.toEntity(user);
+
         postRepository.save(post);
+
         return PostMapper.toDto(post);
     }
 
@@ -42,45 +41,44 @@ public class PostService {
 
     public List<PostResponseDto> findByDisplayName(String displayName) {
         List<Post> posts = postRepository.findByDisplayName(displayName);
-
         return posts.stream()
                 .map(PostMapper::toDto)
                 .toList();
     }
 
 
-    public List<PostResponseDto> findAllPosts(String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public List<PostResponseDto> findAllPosts(String email) {
+        Long userId = getUserIdByEmail(email);
         List<Post> posts = postRepository.findByUserId(userId);
-
         return posts.stream()
                 .map(PostMapper::toDto)
                 .toList();
     }
 
-    public PostResponseDto updatePost(PostRequestDto requestDto, Long postId, String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public PostResponseDto updatePost(PostRequestDto requestDto, Long postId, String email) {
+        Long userId = getUserIdByEmail(email);
         Post post = getPostById(postId);
         validatePostOwnership(post, userId);
+
         post.updatePost(requestDto.getContent());
+
         return PostMapper.toDto(post);
     }
 
-    public void deletePost(Long postId, String authHeader) {
-        String username = jwtUtil.extractUsername(authHeader);
-        Long userId = userService.findUserIdByUsername(username);
-
+    public void deletePost(Long postId, String email) {
+        Long userId = getUserIdByEmail(email);
         Post post = getPostById(postId);
         validatePostOwnership(post, userId);
+
         postRepository.delete(post);
     }
 
-    private User getUserById(String username) {
-        return userService.findByUsername(username);
+    private User getUserByEmail(String email) {
+        return userService.findUserByEmail(email);
+    }
+
+    private Long getUserIdByEmail(String email) {
+        return userService.findUserIdByEmail(email);
     }
 
     public Post getPostById(Long postId) {
