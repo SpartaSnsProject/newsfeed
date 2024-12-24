@@ -5,6 +5,7 @@ import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.PostLike;
 import com.example.newsfeed.repository.PostLikeRepository;
 import com.example.newsfeed.repository.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class PostLikeServiceImpl implements PostLikeService{
         this.postRepository = postRepository;
     }
 
+    @Transactional
     @Override
     public void addPostLike(Long id, RequestPost post) {
         Post findPost = postRepository.findById(post.getId()).orElseThrow(() -> new RuntimeException("게시글을 찾을수 없음"));

@@ -20,7 +20,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
         this.commentRepository = commentRepository;
     }
 
-
+    @Transactional
     @Override
     public void addCommentLike(Long id, RequestComment comment) {
         Comment findComment = commentRepository.findById(comment.getId()).orElseThrow(() -> new RuntimeException("게시물을 찾을수없음"));

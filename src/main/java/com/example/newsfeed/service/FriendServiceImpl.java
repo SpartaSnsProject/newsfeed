@@ -6,6 +6,7 @@ import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;
 import com.example.newsfeed.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class FriendServiceImpl implements FriendService{
         this.userRepository = userRepository;
     }
 
+    @Transactional
     @Override
     public void addFriend(RequestUser RequestFollowingUser, String followUserEmail) {
         User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
@@ -28,6 +30,7 @@ public class FriendServiceImpl implements FriendService{
         friendRepository.save(new Friend(followUser, followingUser));
     }
 
+    @Transactional
     @Override
     public List<ResponseFriend> getFollowing(String followEmail) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
@@ -36,6 +39,7 @@ public class FriendServiceImpl implements FriendService{
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public List<ResponseFriend> getFollower(String followingEmail) {
         User followingUser = userRepository.findByEmail(followingEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
@@ -46,6 +50,7 @@ public class FriendServiceImpl implements FriendService{
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
     public void deleteFriend(String followEmail, Long followingId) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
