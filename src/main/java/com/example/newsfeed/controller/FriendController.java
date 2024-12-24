@@ -23,12 +23,12 @@ public class FriendController {
         this.friendService = friendSerivce;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> addFriend(@RequestBody RequestUser user) {
+    @PostMapping("/{display_name}")
+    public ResponseEntity<Void> addFriend(@PathVariable("display_name") String displayName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        friendService.addFriend(user,username);
+        friendService.addFriend(displayName,username);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -57,12 +57,12 @@ public class FriendController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteFrined(@RequestHeader("Authorization") Long followingId) {
+    @DeleteMapping("/{display_name}")
+    public ResponseEntity<Void> deleteFriend(@PathVariable("display_name") String displayName) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
-        friendService.deleteFriend(username, followingId);
+        friendService.deleteFriend(username, displayName);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

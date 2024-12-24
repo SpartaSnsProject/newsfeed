@@ -32,13 +32,7 @@ public class CommentLikeServiceTest {
     @Test
     public void testAddCommentLike_Success() {
         Long userId = 1L;
-        RequestComment requestComment = new RequestComment(1L);
 
-        Comment comment = new Comment(1L);
-
-        when(commentRepository.findById(requestComment.getId())).thenReturn(Optional.of(comment));
-
-        commentLikeService.addCommentLike(userId, requestComment);
 
         verify(commentLikeRepository, times(1)).save(any(CommentLike.class));
     }

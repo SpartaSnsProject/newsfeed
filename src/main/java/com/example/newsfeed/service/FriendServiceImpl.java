@@ -1,6 +1,5 @@
 package com.example.newsfeed.service;
 
-import com.example.newsfeed.dto.RequestUser;
 import com.example.newsfeed.dto.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
@@ -24,9 +23,9 @@ public class FriendServiceImpl implements FriendService{
 
     @Transactional
     @Override
-    public void addFriend(RequestUser RequestFollowingUser, String followUserEmail) {
+    public void addFriend(String displayName, String followUserEmail) {
         User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
-        User followingUser = userRepository.findById(RequestFollowingUser.getId()).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+        User followingUser = userRepository.findByDisplayName(displayName).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
         friendRepository.save(new Friend(followUser, followingUser));
     }
 
@@ -52,9 +51,9 @@ public class FriendServiceImpl implements FriendService{
 
     @Transactional
     @Override
-    public void deleteFriend(String followEmail, Long followingId) {
+    public void deleteFriend(String followEmail, String followingId) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
-        User followingUser = userRepository.findById(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+        User followingUser = userRepository.findByDisplayName(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
         friendRepository.deleteByFollowerAndFollowing(followUser,followingUser);
     }

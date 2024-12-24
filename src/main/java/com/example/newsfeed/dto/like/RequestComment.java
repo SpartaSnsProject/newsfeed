@@ -5,9 +5,16 @@ import lombok.Setter;
 
 @Getter
 public class RequestComment {
-    Long id;
 
-    public RequestComment(Long id) {
-        this.id = id;
+    Long postId;
+
+    Long commentId;
+
+    String contents;
+
+    public RequestComment(Long postId, Long commentId, String contents) {
+        this.postId = postId;
+        this.commentId = commentId;
+        this.contents = contents;
     }
 }
