@@ -38,4 +38,14 @@ public class PostController {
         PostResponseDto responseDto = postService.updatePost(requestDto, postId, authHeader);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Void> deletePst(
+            @PathVariable Long postId,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        postService.deletePost(postId, authHeader);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
