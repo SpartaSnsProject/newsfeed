@@ -1,21 +1,31 @@
 package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "friends")
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
+@Entity
 public class Friend {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long friend;
+    long id;
 
-    private Long followerId;
-    private Long targetUserId;
+    @ManyToOne
+    @JoinColumn(name = "following_user")
+    User following;
+
+    @ManyToOne
+    @JoinColumn(name = "follower_user")
+    User follower;
+
+    public Friend() {
+    }
+
+    public Friend(User follower, User following) {
+        this.follower = follower;
+        this.following = following;
+    }
 }
