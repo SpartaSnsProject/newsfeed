@@ -43,9 +43,6 @@ erDiagram
         String password
         String displayName
         String bio
-        String location
-        String profileImageUrl
-        String bannerImageUrl
         LocalDate birthDate
         boolean protectedTweets
         int followersCount
@@ -65,8 +62,6 @@ erDiagram
     }
     FRIEND {
         Long id PK
-        Long userId1 FK
-        Long userId2 FK
     }
     POSTLIKE {
         Long id PK
@@ -103,9 +98,6 @@ erDiagram
       "password": "string",
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "birthDate": "YYYY-MM-DD",
       "protectedTweets": "boolean"
     }
@@ -127,9 +119,6 @@ erDiagram
     {
       "displayName": "string",
       "bio": "string",
-      "location": "string",
-      "profileImageUrl": "string",
-      "bannerImageUrl": "string",
       "protectedTweets": "boolean"
     }
     ```
@@ -235,26 +224,55 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "userId1": "Long",
-      "userId2": "Long"
+  "id": "Long"
     }
     ```
 - **Response**:
     - **201 Created**: 생성된 친구 관계 정보
     - **400 Bad Request**: 유효하지 않은 입력
+    - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
-### 4.2 친구 관계 조회
-- **GET** `/api/friends/{id}`
+### 4.2 내가 팔로우하는 사용자 조회
+- **GET** `/api/follow/following`
 - **Response**:
-    - **200 OK**: 친구 관계 정보
-    - **404 Not Found**: 친구 관계가 존재하지 않음
+    - **200 OK**: 내가 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followingUsers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 팔로우하는 사용자가 존재하지 않음
 
-### 4.3 친구 관계 삭제
-- **DELETE** `/api/friends/{id}`
+### 4.3 나를 팔로우하는 사용자 조회
+- **GET** `/api/follow/follower`
+- **Response**:
+    - **200 OK**: 나를 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 나를 팔로우하는 사용자가 존재하지 않음
+
+### 4.4 친구 관계 삭제
+- **DELETE** `/api/follow`
+- **Request Header**:
+    - `Authorization`: 팔로우할 사용자의 ID
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 친구 관계가 존재하지 않음
-
 ---
 
 ## 5. 좋아요(Like) API
@@ -264,8 +282,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "postId": "Long",
-      "userId": "Long"
+      "postId": "Long"
     }
     ```
 - **Response**:
@@ -277,22 +294,47 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "commentId": "Long",
-      "userId": "Long"
+      "commentId": "Long"
     }
     ```
 - **Response**:
     - **201 Created**: 생성된 좋아요 정보
     - **400 Bad Request**: 유효하지 않은 입력
 
-### 5.3 좋아요 삭제
+### 5.3 게시글 좋아요 수 조회
+- **GET** `/api/postlikes/{post_id}`
+- **Response**:
+    - **200 OK**: 게시글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+### 5.4 댓글 좋아요 수 조회
+- **GET** `/api/commentlikes/{comment_id}`
+- **Response**:
+    - **200 OK**: 댓글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+### 5.5 게시글 좋아요 삭제
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
 
-### 5.4 댓글 좋아요 삭제
+### 5.6 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
