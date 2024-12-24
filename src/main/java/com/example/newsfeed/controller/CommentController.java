@@ -1,8 +1,8 @@
 package com.example.newsfeed.controller;
 
 
-import com.example.newsfeed.dto.RequestPatchComment;
-import com.example.newsfeed.dto.ResponseComment;
+import com.example.newsfeed.dto.comment.RequestPatchComment;
+import com.example.newsfeed.dto.comment.ResponseComment;
 import com.example.newsfeed.dto.like.RequestComment;
 import com.example.newsfeed.service.CommentService;
 import org.springframework.http.HttpStatus;

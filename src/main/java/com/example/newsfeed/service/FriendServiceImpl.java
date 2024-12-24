@@ -1,6 +1,6 @@
 package com.example.newsfeed.service;
 
-import com.example.newsfeed.dto.ResponseFriend;
+import com.example.newsfeed.dto.friend.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;

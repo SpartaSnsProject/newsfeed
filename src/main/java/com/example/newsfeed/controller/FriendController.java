@@ -1,7 +1,6 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.RequestUser;
-import com.example.newsfeed.dto.ResponseFriend;
+import com.example.newsfeed.dto.friend.ResponseFriend;
 import com.example.newsfeed.service.FriendService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

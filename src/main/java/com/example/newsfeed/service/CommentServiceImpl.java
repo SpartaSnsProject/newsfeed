@@ -1,8 +1,8 @@
 package com.example.newsfeed.service;
 
 
-import com.example.newsfeed.dto.RequestPatchComment;
-import com.example.newsfeed.dto.ResponseComment;
+import com.example.newsfeed.dto.comment.RequestPatchComment;
+import com.example.newsfeed.dto.comment.ResponseComment;
 import com.example.newsfeed.dto.like.RequestComment;
 import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.Post;
@@ -13,7 +13,6 @@ import com.example.newsfeed.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CommentServiceImpl implements CommentService{

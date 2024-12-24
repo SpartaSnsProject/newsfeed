@@ -1,6 +1,6 @@
 package com.example.newsfeed.service;
 
-import com.example.newsfeed.dto.ResponseFriend;
+import com.example.newsfeed.dto.friend.ResponseFriend;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package com.example.newsfeed.service;
 
-import com.example.newsfeed.dto.RequestPatchComment;
-import com.example.newsfeed.dto.ResponseComment;
+import com.example.newsfeed.dto.comment.RequestPatchComment;
+import com.example.newsfeed.dto.comment.ResponseComment;
 import com.example.newsfeed.dto.like.RequestComment;
 
 import java.util.List;
