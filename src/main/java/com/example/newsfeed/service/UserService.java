@@ -8,10 +8,14 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.*;
 import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
+import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
 @Slf4j  // 이 어노테이션 추가
 
 @Service
@@ -130,5 +134,10 @@ public class UserService {
         }
 
         return UserProfileResponseDto.from(user);
+    }
+
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
 }
