@@ -2,6 +2,8 @@ package com.example.newsfeed.repository;
 
 import com.example.newsfeed.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -13,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String displayName);
     Optional<User> findByEmail(String email);
     Optional<User> findByDisplayName(String displayName);
+
+    @Query("SELECT u.id FROM User u WHERE u.username = :username")
+    Long findUserIdByUsername(@Param("username") String username);
 }

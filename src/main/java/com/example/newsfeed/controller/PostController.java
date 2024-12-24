@@ -27,4 +27,15 @@ public class PostController {
 
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+    @PutMapping("/{postId}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<PostResponseDto> updatePost(
+            @Valid @RequestBody PostRequestDto requestDto,
+            @PathVariable Long postId,
+            @RequestHeader("Authorization") String authHeader
+    ) {
+        PostResponseDto responseDto = postService.updatePost(requestDto, postId, authHeader);
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 }

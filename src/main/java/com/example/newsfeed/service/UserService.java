@@ -140,4 +140,8 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
+
+    public Long findUserIdByUsername(String username) {
+        return userRepository.findUserIdByUsername(username);
+    }
 }
