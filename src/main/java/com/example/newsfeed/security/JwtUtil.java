@@ -67,4 +67,9 @@ public class JwtUtil {
             throw new IllegalArgumentException("유효하지 않은 토큰입니다.");
         }
     }
+
+    public String extractUsername(String authorHeader) {
+        String token = authorHeader.substring(7);
+        return getUsernameFromToken(token);
+    }
 }
