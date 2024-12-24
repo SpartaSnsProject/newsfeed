@@ -83,4 +83,8 @@ public class User extends BaseEntity {
     public void updateProtectedTweets(boolean protectedTweets) {
         this.protectedTweets = protectedTweets;
     }
+
+    public void updateUsername(String username) {
+        this.username = username;
+    }
 }

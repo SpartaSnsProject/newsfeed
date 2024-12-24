@@ -23,8 +23,12 @@ public class UserService {
     private final JwtUtil jwtUtil;
 
     public UserSignupResponseDto signup(UserSignupRequestDto requestDto) {
-        // 중복 검사
-        if (userRepository.existsByDisplayName(requestDto.getDisplayName())) {
+        // 이메일에서 @ 앞부분을 추출하여 displayName 설정
+        String emailPrefix = requestDto.getEmail().split("@")[0];
+        String displayName = "@" + emailPrefix;
+
+        // displayName 중복 검사
+        if (userRepository.existsByDisplayName(displayName)) {
             throw new DuplicateUsernameException("이미 사용 중인 사용자명입니다.");
         }
         if (userRepository.existsByEmail(requestDto.getEmail())) {
@@ -39,7 +43,7 @@ public class UserService {
                 .username(requestDto.getUsername())
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
-                .displayName(requestDto.getDisplayName())
+                .displayName(displayName)  // 자동 생성된 displayName 사용
                 .bio(requestDto.getBio())
                 .birthDate(requestDto.getBirthDate())
                 .build();
@@ -49,6 +53,8 @@ public class UserService {
 
         return UserSignupResponseDto.from(savedUser);
     }
+
+
 
     @Transactional
     public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
@@ -64,21 +70,19 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserProfileResponseDto getUserProfile(Long id) {  // userId를 id로 변경
-        log.info("Getting user profile for id: {}", id);
+    public UserProfileResponseDto getUserProfileByDisplayName(String displayName) {
+        log.info("Getting user profile for displayName: {}", displayName);
 
-        User user = userRepository.findById(id)  // userId 대신 id 사용
+        User user = userRepository.findByDisplayName(displayName)
                 .orElseThrow(() -> {
-                    log.error("User not found with id: {}", id);
+                    log.error("User not found with displayName: {}", displayName);
                     return new UserNotFoundException("존재하지 않는 사용자입니다.");
                 });
 
-        log.info("Found user: id={}, email={}",
-                user.getId(),
-                user.getEmail());
+        log.info("Found user: id={}, email={}", user.getId(), user.getEmail());
 
         if (user.isDeleted()) {
-            log.warn("User is deleted: id={}", id);
+            log.warn("User is deleted: displayName={}", displayName);
             throw new IllegalArgumentException("탈퇴한 사용자입니다.");
         }
 
@@ -88,30 +92,35 @@ public class UserService {
         return responseDto;
     }
     @Transactional
-    public UserProfileResponseDto updateProfile(Long userId, UserUpdateRequestDto requestDto, String email) {
+    public UserProfileResponseDto updateProfileByDisplayName(String displayName, UserUpdateRequestDto requestDto, String email) {
+        // displayName에 @ 추가
+        String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
+
+        log.debug("Attempting to update profile. FormattedDisplayName: {}, Email: {}", formattedDisplayName, email);
+
         // 1. 대상 사용자 확인
-        User user = userRepository.findById(userId)
+        User user = userRepository.findByDisplayName(formattedDisplayName)
                 .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+        log.debug("Found target user: email={}, displayName={}", user.getEmail(), user.getDisplayName());
 
         // 2. 현재 로그인한 사용자 확인
         User currentUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
+        log.debug("Found current user: email={}, displayName={}", currentUser.getEmail(), currentUser.getDisplayName());
 
-        // 3. 권한 확인
-        if (!currentUser.getId().equals(userId)) {
+        // 3. 권한 확인 - 이메일로 비교
+        if (!currentUser.getDisplayName().equals(formattedDisplayName)) {
+            log.debug("Permission denied. Current user displayName: {}, Target displayName: {}",
+                    currentUser.getDisplayName(), formattedDisplayName);
             throw new ForbiddenException("프로필 수정 권한이 없습니다.");
         }
 
-        // 4. displayName 중복 검사 (변경하려는 경우에만)
-        if (requestDto.getDisplayName() != null &&
-                !requestDto.getDisplayName().equals(user.getDisplayName()) &&
-                userRepository.existsByDisplayName(requestDto.getDisplayName())) {
-            throw new IllegalArgumentException("이미 사용 중인 사용자명입니다.");
-        }
-
-        // 5. 필드 업데이트 (null이 아닌 필드만)
-        if (requestDto.getDisplayName() != null) {
-            user.updateDisplayName(requestDto.getDisplayName());
+        // 4. 필드 업데이트 (null이 아닌 필드만)
+        if (requestDto.getUsername() != null) {
+            if (requestDto.getUsername().length() < 3 || requestDto.getUsername().length() > 15) {
+                throw new IllegalArgumentException("사용자명은 3-15자 사이여야 합니다.");
+            }
+            user.updateUsername(requestDto.getUsername());
         }
         if (requestDto.getBio() != null) {
             user.updateBio(requestDto.getBio());
