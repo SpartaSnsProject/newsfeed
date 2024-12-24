@@ -54,11 +54,11 @@ public class UserController {
             description = "사용자 ID로 프로필을 조회합니다.",
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
-    @GetMapping("/{id}")  // userId를 id로 변경
+    @GetMapping("/{displayName}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ApiResponse<UserProfileResponseDto>> getUserProfile(
-            @PathVariable Long id) {  // userId를 id로 변경
-        log.debug("Attempting to retrieve profile for id: {}", id);
+    public ResponseEntity<ApiResponse<UserProfileResponseDto>> getUserProfileByDisplayName(
+            @PathVariable String displayName) {
+        log.debug("Attempting to retrieve profile for displayName: {}", displayName);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         log.debug("Current authentication: {}", authentication);
@@ -69,26 +69,37 @@ public class UserController {
             throw new UnauthorizedException("인증이 필요합니다.");
         }
 
-        UserProfileResponseDto responseDto = userService.getUserProfile(id);
-        log.debug("Successfully retrieved profile for id: {}", id);
+        // @ 기호가 없는 경우 추가
+        if (!displayName.startsWith("@")) {
+            displayName = "@" + displayName;
+        }
+
+        UserProfileResponseDto responseDto = userService.getUserProfileByDisplayName(displayName);
+        log.debug("Successfully retrieved profile for displayName: {}", displayName);
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success("프로필 조회에 성공했습니다.", responseDto));
     }
-
     @Operation(
             summary = "프로필 수정",
-            description = "사용자 프로필을 수정합니다.",
+            description = "사용자 프로필을 수정합니다. 자신의 아이디로 로그인한 diplayName만 수정기능이 동작합니다.",
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
-    @PutMapping("/{userId}")
+
+
+    @PutMapping("/{displayName}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserProfileResponseDto>> updateProfile(
-            @PathVariable Long userId,
+            @PathVariable String displayName,
             @Valid @RequestBody UserUpdateRequestDto requestDto,
             @AuthenticationPrincipal UserDetails userDetails) {
         try {
-            UserProfileResponseDto responseDto = userService.updateProfile(userId, requestDto, userDetails.getUsername());
+            // displayName에 @ 추가a
+            String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
+
+            log.debug("Attempting to update profile for displayName: {}", formattedDisplayName);
+
+            UserProfileResponseDto responseDto = userService.updateProfileByDisplayName(formattedDisplayName, requestDto, userDetails.getUsername());
             return ResponseEntity.ok(ApiResponse.success("프로필이 성공적으로 수정되었습니다.", responseDto));
         } catch (UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
