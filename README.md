@@ -3,11 +3,11 @@
 2. [Wireframe](#wireframe)
 3. [Erd](#erd)
 4. [API 명세서](#api-명세서)
-    1. [1. 사용자(User) API](#1-사용자user-api)
-    2. [2. 게시글(Post) API](#2-게시글post-api)
-    3. [3. 댓글(Comment) API](#3-댓글comment-api)
-    4. [4. 친구(Comment) API](#4-친구friend-api)
-    5. [5. 좋아요(Like) API](#5-좋아요like-api)
+   1. [1. 사용자(User) API](#1-사용자user-api)
+   2. [2. 게시글(Post) API](#2-게시글post-api)
+   3. [3. 댓글(Comment) API](#3-댓글comment-api)
+   4. [4. 친구(Comment) API](#4-친구friend-api)
+   5. [5. 좋아요(Like) API](#5-좋아요like-api)
 
 # Commit Message Convention
 
@@ -17,13 +17,13 @@
 태그 : 제목의 형태이며, :뒤에만 space가 있음에 유의한다.
 내용은 간단하게 영어로 작성
 
-feat : 새로운 기능 추가 
-fix : 버그 수정 
-docs : 문서 수정 
-style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
-refactor : 코드 리펙토링 
-test : 테스트 코드, 리펙토링 테스트 코드 추가 
-chore : 빌드 업무 수정, 패키지 매니저 수정
+Feat : 새로운 기능 추가 
+Fix : 버그 수정 
+Docs : 문서 수정 
+Style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
+Refactor : 코드 리펙토링 
+Test : 테스트 코드, 리펙토링 테스트 코드 추가 
+Chore : 빌드 업무 수정, 패키지 매니저 수정
 ```
 
 # Wireframe
@@ -62,8 +62,6 @@ erDiagram
     }
     FRIEND {
         Long id PK
-        Long follower FK
-        Long following FK
     }
     POSTLIKE {
         Long id PK
@@ -87,7 +85,6 @@ erDiagram
 ```
 
 # API 명세서
-## 401은 global 설정 예정입니다.
 
 ## 1. 사용자(User) API
 
@@ -117,7 +114,7 @@ erDiagram
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
-- **Request Body**:
+- **Request Body**: (업데이트할 필드만 포함)
     ```json
     {
       "displayName": "string",
@@ -134,18 +131,6 @@ erDiagram
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 사용자가 존재하지 않음
-
-### 1.5 비밀번호 변경
-- **PUT** `/api/password/{id}`
-- **Request Body**:
-    ```json
-    {
-      "password": "string",
-    }
-    ```
-- **Response**:
-    - **204 No Content**: 패스워드 변경 성공
-    - **403 Not Found**: 사용자의 비밀번호가 다름
 
 ---
 
@@ -235,11 +220,11 @@ erDiagram
 ## 4. 친구(Friend) API
 
 ### 4.1 친구 관계 생성
-- **POST** `/api/follow`
+- **POST** `/api/friends`
 - **Request Body**:
     ```json
     {
-      "id": "Long" 
+  "id": "Long"
     }
     ```
 - **Response**:
