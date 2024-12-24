@@ -30,12 +30,12 @@ public class PostLikeServiceImpl implements PostLikeService{
 
     @Override
     public int getPostLike(Long postId) {
-        List<PostLike> byPostId = postLikeRepository.findByPostId(postId);
+        List<PostLike> byPostId = postLikeRepository.findByPost_PostId(postId);
         return byPostId.size();
     }
 
     @Override
     public void deletePostLike(Long userId, Long postId) {
-        postLikeRepository.deleteByPostIdAndUserId(postId, userId);
+        postLikeRepository.deleteByPost_PostIdAndUserId(postId, userId);
     }
 }

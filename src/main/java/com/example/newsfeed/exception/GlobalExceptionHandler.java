@@ -1,6 +1,7 @@
 package com.example.newsfeed.exception;
 
 import com.example.newsfeed.dto.common.ApiResponse;
+import com.example.newsfeed.exception.post.PostNotFoundException;
 import com.example.newsfeed.exception.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
