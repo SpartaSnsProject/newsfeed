@@ -1,6 +1,5 @@
 package com.example.newsfeed.entity;
 
-import com.example.newsfeed.dto.like.RequestComment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +16,8 @@ public class Comment {
     @Setter
     String contents;
 
-    @Column(name = "reply_count")
-    int replyCount;
+    @Column(name = "like_count")
+    int commentLikeCount;
 
     @ManyToOne
     @JoinColumn(name = "post_post")
@@ -42,5 +41,9 @@ public class Comment {
         this.displayName= displayName;
         this.comment = comment;
         this.contents = contents;
+    }
+
+    public void upLikeCount(){
+        this.commentLikeCount++;
     }
 }

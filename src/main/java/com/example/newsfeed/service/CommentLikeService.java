@@ -1,12 +1,37 @@
 package com.example.newsfeed.service;
 
+import com.example.newsfeed.dto.comment.RequestComment;
+import com.example.newsfeed.entity.Comment;
+import com.example.newsfeed.entity.CommentLike;
+import com.example.newsfeed.repository.CommentRepository;
+import com.example.newsfeed.repository.CommentLikeRepository;
+import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Service;
 
-import com.example.newsfeed.dto.like.RequestComment;
+@Service
+public class CommentLikeService {
+    CommentLikeRepository commentLikeRepository;
+    CommentRepository commentRepository;
 
-public interface CommentLikeService {
-    void addCommentLike(Long id, RequestComment commentId);
+    public CommentLikeService(CommentLikeRepository commentLikeRepository, CommentRepository commentRepository) {
+        this.commentLikeRepository = commentLikeRepository;
+        this.commentRepository = commentRepository;
+    }
 
-    void deleteCommentLike(Long id, Long commentId);
+    @Transactional
+    public void addCommentLike(Long id, RequestComment comment) {
+        Comment findComment = commentRepository.findById(comment.getCommentId()).orElseThrow(() -> new RuntimeException("게시물을 찾을수없음"));
+        findComment.upLikeCount();
+        commentRepository.save(findComment);
+        commentLikeRepository.save(new CommentLike(findComment,id));
+    }
 
-    int getCommentLike(Long commentId);
+    public int getCommentLike(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("게시물 못찾음 익셉션"));
+        return comment.getCommentLikeCount();
+    }
+
+    public void deleteCommentLike(Long userId, Long commentId) {
+        commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
+    }
 }

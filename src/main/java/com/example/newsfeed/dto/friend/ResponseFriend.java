@@ -2,6 +2,7 @@ package com.example.newsfeed.dto.friend;
 
 import com.example.newsfeed.entity.User;
 
+
 public class ResponseFriend {
     User follower;
     User following;

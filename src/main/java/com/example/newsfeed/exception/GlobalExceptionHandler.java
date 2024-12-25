@@ -18,9 +18,8 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateUsernameException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDuplicateUsername(DuplicateUsernameException e) {
-        return ResponseEntity.badRequest()
-                .body(ApiResponse.error(e.getMessage()));
+    public ResponseEntity<String> handleDuplicateUsername(DuplicateUsernameException e) {
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateEmailException.class)

@@ -1,7 +1,8 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.like.RequestComment;
+import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.service.CommentLikeService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ public class CommentLikeController {
         this.commentLikeService = commentLikeService;
     }
 
+    @Operation(summary = "댓글에 좋아요추가",description = "댓글에 좋아요를 추가합니다.")
     @PostMapping
     public ResponseEntity<Void> addCommentLike(@RequestBody RequestComment comment, HttpSession session) {
         Long id = (Long) session.getAttribute("id");
@@ -24,13 +26,15 @@ public class CommentLikeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("{comment_id}")
+    @Operation(summary = "댓글좋아요갯수",description = "댓글에 좋아요 갯수를 확인합니다.")
+    @GetMapping("/{comment_id}")
     public ResponseEntity<Integer> getCommentLIke(@PathVariable("comment_id") Long commentId) {
         int commentLike = commentLikeService.getCommentLike(commentId);
         return new ResponseEntity<>(commentLike,HttpStatus.OK);
     }
 
-    @DeleteMapping("{comment_id}")
+    @Operation(summary = "댓글에 좋아요 삭제",description = "댓글에 좋아요를 삭제합니다.")
+    @DeleteMapping("/{comment_id}")
     public ResponseEntity<Void> deleteCommentLike(@PathVariable("comment_id") Long commentId,HttpSession session) {
         Long id = (Long) session.getAttribute("id");
         commentLikeService.deleteCommentLike(id,commentId);
