@@ -5,23 +5,22 @@ import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;
 import com.example.newsfeed.repository.UserRepository;
-import jakarta.transaction.Transactional;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class FriendService {
-    FriendRepository friendRepository;
+    private final FriendRepository friendRepository;
 
-    UserRepository userRepository;
-    public FriendService(FriendRepository friendRepository, UserRepository userRepository) {
-        this.friendRepository = friendRepository;
-        this.userRepository = userRepository;
-    }
+    private final UserRepository userRepository;
 
-    @Transactional
     public void addFriend(String displayName, String followUserEmail) {
 
         User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
@@ -31,7 +30,6 @@ public class FriendService {
         friendRepository.save(new Friend(followUser, followingUser));
     }
 
-    @Transactional
     public List<ResponseFriend> getFollowing(String followEmail) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
         return friendRepository.findAllByFollower(followUser).stream()
@@ -39,7 +37,6 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public List<ResponseFriend> getFollower(String followingEmail) {
         User followingUser = userRepository.findByEmail(followingEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
         return
@@ -49,7 +46,6 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void deleteFriend(String followEmail, String followingId) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
         User followingUser = userRepository.findByDisplayName(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));

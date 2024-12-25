@@ -10,22 +10,20 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.PostRepository;
 import com.example.newsfeed.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class CommentService {
-    CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
 
-    UserRepository userRepository;
-    PostRepository postRepository;
-    public CommentService(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-        this.postRepository = postRepository;
-    }
-
+    private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
     public ResponseComment addComment(RequestComment requestComment, String username) {
         User user = userRepository
@@ -55,7 +53,6 @@ public class CommentService {
         }
     }
 
-
     public List<ResponseComment> getCommentByPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("아 게시물 없다고"));
         List<Comment> commentList= commentRepository.findAllByPost(post);
@@ -73,7 +70,6 @@ public class CommentService {
                 .map(ResponseComment::from)
                 .toList();
     }
-
 
     public ResponseComment updateComment(RequestPatchComment comment, String username) {
         User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("유저못찾음"));

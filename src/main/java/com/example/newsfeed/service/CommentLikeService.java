@@ -4,18 +4,15 @@ import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.CommentLike;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.CommentLikeRepository;
-import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class CommentLikeService {
-    CommentLikeRepository commentLikeRepository;
-    CommentRepository commentRepository;
-
-    public CommentLikeService(CommentLikeRepository commentLikeRepository, CommentRepository commentRepository) {
-        this.commentLikeRepository = commentLikeRepository;
-        this.commentRepository = commentRepository;
-    }
+    private final CommentLikeRepository commentLikeRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public void addCommentLike(Long id, Long commentId) {
