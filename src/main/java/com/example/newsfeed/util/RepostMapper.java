@@ -7,20 +7,21 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RepostMapper {
-    public static RepostResponseDto toDto(Post post, Post originalPost) {
-        return new RepostResponseDto(
-                post.getPostId(),
-                post.getUser().getUsername(),
-                post.getUser().getDisplayName(),
-                post.getContent(),
-                post.getCreatedAt(),
-                post.getModifiedAt(),
-                originalPost.getPostId(),
-                originalPost.getUser().getUsername(),
-                originalPost.getUser().getDisplayName(),
-                originalPost.getContent(),
-                originalPost.getCreatedAt(),
-                originalPost.getModifiedAt()
-        );
+    public static RepostResponseDto toDto(Post post, Post originalPost){
+        return RepostResponseDto.builder()
+                .rePostId(post.getPostId())
+                .username(post.getUser().getUsername())
+                .displayName(post.getUser().getDisplayName())
+                .content(post.getContent())
+                .createdAt(post.getCreatedAt())
+                .modifiedAt(post.getModifiedAt())
+                .originalPostId(originalPost.getPostId())
+                .originalPostUserName(originalPost.getUser().getUsername())
+                .originalDisplayName(originalPost.getUser().getDisplayName())
+                .originalPostContent(originalPost.getContent())
+                .repostCount(originalPost.getRepostCount())
+                .originalCreatedAt(originalPost.getCreatedAt())
+                .originalModifiedAt(originalPost.getModifiedAt())
+                .build();
     }
 }

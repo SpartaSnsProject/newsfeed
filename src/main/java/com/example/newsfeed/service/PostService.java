@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 @Service
@@ -33,11 +32,13 @@ public class PostService {
         return PostMapper.toDto(post);
     }
 
+    @Transactional(readOnly = true)
     public PostResponseDto findByPostId(Long postId) {
         Post post = getPostById(postId);
         return PostMapper.toDto(post);
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponseDto> findByDisplayName(String displayName) {
         List<Post> posts = postRepository.findByUser_DisplayName(displayName);
         return posts.stream()
@@ -45,7 +46,7 @@ public class PostService {
                 .toList();
     }
 
-
+    @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(String email) {
         Long userId = getUserIdByEmail(email);
         List<Post> posts = postRepository.findByUser_Id(userId);

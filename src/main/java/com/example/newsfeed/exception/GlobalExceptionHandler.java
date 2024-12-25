@@ -35,12 +35,12 @@ public class GlobalExceptionHandler {
     }
 
     // 기타 모든 예외 처리
-   /* @ExceptionHandler(Exception.class)
+   @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiResponse<Void>> handleAllException(Exception e) {
         return ResponseEntity.internalServerError()
                 .body(ApiResponse.error("서버 내부 오류가 발생했습니다."));
     }
-    */
+
     //유저로그인 에러반환
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<ApiResponse<Void>> handleLoginFailed(LoginFailedException e) {

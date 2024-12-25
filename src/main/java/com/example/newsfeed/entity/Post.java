@@ -31,6 +31,8 @@ public class Post extends BaseEntity{
 
     private boolean isOriginal;
 
+    private int repostCount = 0;
+
     public Post(User user, String content){
         this.user = user;
         this.content = content;
@@ -52,8 +54,14 @@ public class Post extends BaseEntity{
         return new Post(user, content, this);
     }
 
-    public boolean isRepost() {
-        return originalPost != null;
+    public void incrementRepostCount() {
+        repostCount++;
+    }
+
+    public void decrementRepostCount() {
+        if(this.repostCount > 0){
+            repostCount--;
+        }
     }
 }
 

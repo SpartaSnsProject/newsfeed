@@ -195,17 +195,17 @@ public class UserService {
         // 5. 소프트 딜리트 수행
         user.setIsDeleted(true);
     }
-
+    // 추가 (고예나)
     public User findById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
-
+    // 추가 (고예나)
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
     }
-
+    // 추가 (고예나)
     public Long findUserIdByEmail(String email) {
         User user = userRepository.findIdByEmail(email)
                 .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));

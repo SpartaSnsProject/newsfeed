@@ -16,6 +16,7 @@ public class PostMapper {
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
                 .isOriginal(post.isOriginal())
+                .repostCount(post.getRepostCount())
                 .build();
     }
 }

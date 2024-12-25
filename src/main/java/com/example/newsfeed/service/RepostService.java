@@ -5,7 +5,6 @@ import com.example.newsfeed.dto.post.RepostResponseDto;
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.UnauthorizedException;
-import com.example.newsfeed.repository.PostRepository;
 import com.example.newsfeed.util.RepostMapper;
 import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ public class RepostService {
 
     private final UserService userService;
     private final PostService postService;
-    private final PostRepository postRepository;
 
     public RepostResponseDto toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
         Long userId = getUserIdByEmail(email);
@@ -27,6 +25,7 @@ public class RepostService {
         User user = userService.findById(userId);
         Post repost = originalPost.repost(user, requestDto.getContent());
 
+        originalPost.incrementRepostCount();
         postService.save(repost);
 
         return RepostMapper.toDto(repost, originalPost);
@@ -35,6 +34,7 @@ public class RepostService {
     public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String email) {
         Long userId = getUserIdByEmail(email);
         Post repost = postService.getPostById(repostId);
+
         validatePostOwnership(repost, userId);
 
         repost.updatePost(requestDto.getContent());
@@ -46,6 +46,9 @@ public class RepostService {
         Long userId = getUserIdByEmail(email);
         Post repost = postService.getPostById(repostId);
 
+        validatePostOwnership(repost, userId);
+
+        repost.getOriginalPost().decrementRepostCount();
         postService.delete(repost);
     }
 
