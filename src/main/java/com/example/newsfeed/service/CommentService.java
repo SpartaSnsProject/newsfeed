@@ -43,13 +43,13 @@ public class CommentService {
             Comment save = commentRepository
                     .save(new Comment(displayName, post, requestComment.getContents()));
 
-            return new ResponseComment(save);
+            return ResponseComment.from(save);
         } else if (requestComment.getPostId() == null) {
 
             Comment comment = commentRepository.findById(requestComment.getCommentId()).orElseThrow(() -> new RuntimeException("댓글을 못찾음"));
             Comment save = commentRepository.save(new Comment(displayName, comment, requestComment.getContents()));
 
-            return new ResponseComment(save);
+            return ResponseComment.from(save);
         } else {
             throw new RuntimeException("둘중 하나만 입력해 익셉션");
         }
@@ -61,7 +61,7 @@ public class CommentService {
         List<Comment> commentList= commentRepository.findAllByPost(post);
 
         return commentList.stream()
-                .map(ResponseComment::new)
+                .map(ResponseComment::from)
                 .toList();
     }
 
@@ -70,7 +70,7 @@ public class CommentService {
         List<Comment> allByComment = commentRepository.findAllByComment(comment);
 
         return allByComment.stream()
-                .map(ResponseComment::new)
+                .map(ResponseComment::from)
                 .toList();
     }
 
@@ -82,7 +82,7 @@ public class CommentService {
         if (user.getDisplayName().equals(findComment.getDisplayName())) {
             findComment.setContents(comment.getContents());
             Comment save = commentRepository.save(findComment);
-            return new ResponseComment(save);
+            return ResponseComment.from(save);
         } else {
             throw new RuntimeException("이 댓글에 권한없음 익셉션");
         }
@@ -95,7 +95,7 @@ public class CommentService {
 
         if (user.getDisplayName().equals(comment.getDisplayName())) {
             commentRepository.deleteById(commentId);
-            return new ResponseComment(comment);
+            return ResponseComment.from(comment);
         } else {
             throw new RuntimeException("이 댓글에 권한없음 익셉션");
         }

@@ -1,14 +1,18 @@
 package com.example.newsfeed.dto.friend;
 
 import com.example.newsfeed.entity.User;
+import lombok.Builder;
 
-
+@Builder
 public class ResponseFriend {
-    User follower;
-    User following;
+    private final User follower;
+    private final User following;
 
-    public ResponseFriend(User follower, User following) {
-        this.follower = follower;
-        this.following = following;
+
+    public static ResponseFriend from(User follower,User following ) {
+        return ResponseFriend.builder()
+                .follower(follower)
+                .following(following)
+                .build();
     }
 }

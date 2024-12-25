@@ -35,7 +35,7 @@ public class FriendService {
     public List<ResponseFriend> getFollowing(String followEmail) {
         User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
         return friendRepository.findAllByFollower(followUser).stream()
-                .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
+                .map(friend->ResponseFriend.from(friend.getFollower(),friend.getFollowing()))
                 .collect(Collectors.toList());
     }
 
@@ -45,7 +45,7 @@ public class FriendService {
         return
                 friendRepository.findAllByFollowing(followingUser)
                         .stream()
-                .map(friend->new ResponseFriend(friend.getFollower(),friend.getFollowing()))
+                .map(friend->ResponseFriend.from(friend.getFollower(),friend.getFollowing()))
                 .collect(Collectors.toList());
     }
 

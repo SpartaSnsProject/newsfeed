@@ -23,6 +23,7 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "like_count")
     private int postLikeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)

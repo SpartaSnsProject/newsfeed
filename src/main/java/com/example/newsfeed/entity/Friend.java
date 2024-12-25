@@ -2,11 +2,10 @@ package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Friend {
     @Id
@@ -20,9 +19,6 @@ public class Friend {
     @ManyToOne
     @JoinColumn(name = "follower_user")
     User follower;
-
-    public Friend() {
-    }
 
     public Friend(User follower, User following) {
         this.follower = follower;

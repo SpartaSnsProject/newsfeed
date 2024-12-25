@@ -2,11 +2,13 @@ package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
 @Entity
-public class Comment {
+public class Comment extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -27,9 +29,6 @@ public class Comment {
     @JoinColumn(name = "comment_comment")
     Comment comment;
 
-
-    public Comment() {
-    }
 
     public Comment(String displayName, Post post, String contents) {
         this.displayName = displayName;
