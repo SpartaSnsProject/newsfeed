@@ -6,7 +6,6 @@ import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.UnauthorizedException;
 import com.example.newsfeed.repository.PostRepository;
-import com.example.newsfeed.security.JwtUtil;
 import com.example.newsfeed.util.RepostMapper;
 import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;

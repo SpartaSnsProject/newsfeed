@@ -2,8 +2,6 @@ package com.example.newsfeed.dto.post;
 
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

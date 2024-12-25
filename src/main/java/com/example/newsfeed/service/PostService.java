@@ -7,7 +7,6 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.post.PostNotFoundException;
 import com.example.newsfeed.exception.user.UnauthorizedException;
 import com.example.newsfeed.repository.PostRepository;
-import com.example.newsfeed.security.JwtUtil;
 import com.example.newsfeed.util.PostMapper;
 import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +39,7 @@ public class PostService {
     }
 
     public List<PostResponseDto> findByDisplayName(String displayName) {
-        List<Post> posts = postRepository.findByDisplayName(displayName);
+        List<Post> posts = postRepository.findByUser_DisplayName(displayName);
         return posts.stream()
                 .map(PostMapper::toDto)
                 .toList();
@@ -49,7 +48,7 @@ public class PostService {
 
     public List<PostResponseDto> findAllPosts(String email) {
         Long userId = getUserIdByEmail(email);
-        List<Post> posts = postRepository.findByUserId(userId);
+        List<Post> posts = postRepository.findByUser_Id(userId);
         return posts.stream()
                 .map(PostMapper::toDto)
                 .toList();
