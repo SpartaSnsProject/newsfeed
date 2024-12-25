@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -53,6 +54,11 @@ public class User extends BaseEntity {
     private boolean isDeleted = false;
 
 
+    public void setIsDeleted(boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
+
     @Builder
     private User(String username, String email, String password, String displayName,
                  String bio, LocalDate birthDate) {
@@ -84,5 +90,8 @@ public class User extends BaseEntity {
     public void updateUsername(String username) {
         this.username = username;
     }
-}
 
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
+}

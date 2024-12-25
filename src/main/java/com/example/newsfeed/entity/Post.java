@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-
 @Entity
 @Table(name = "posts")
 @NoArgsConstructor
@@ -23,6 +22,7 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+
     @Column(name = "like_count")
     private int postLikeCount;
 
@@ -34,6 +34,9 @@ public class Post extends BaseEntity{
     private String content;
 
     private boolean isOriginal;
+
+
+    private int repostCount = 0;
 
     public Post(User user, String content){
         this.user = user;
@@ -56,11 +59,22 @@ public class Post extends BaseEntity{
         return new Post(user, content, this);
     }
 
+
     public boolean isRepost() {
         return originalPost != null;
     }
     public void upPostLike() {
         postLikeCount++;
+    }
 
+    public void incrementRepostCount() {
+        repostCount++;
+    }
+
+    public void decrementRepostCount() {
+        if(this.repostCount > 0){
+            repostCount--;
+        }
     }
 }
+

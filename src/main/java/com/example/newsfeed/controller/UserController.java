@@ -114,5 +114,62 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ApiResponse.error(e.getMessage()));
         }
+
+    }
+
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "사용자의 비밀번호를 변경합니다.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
+    @PutMapping("/{displayName}/password")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<String>> changePassword(
+            @PathVariable String displayName,
+            @Valid @RequestBody PasswordChangeRequestDto requestDto,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
+            userService.changePassword(formattedDisplayName, requestDto, userDetails.getUsername());
+            return ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.", null));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (ForbiddenException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "사용자 계정을 삭제합니다.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
+    @DeleteMapping("/{displayName}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<String>> deleteUser(
+            @PathVariable String displayName,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
+            userService.deleteUser(formattedDisplayName, userDetails.getUsername());
+            return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다.", null));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (UnauthorizedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponse.error(e.getMessage()));
+        } catch (ForbiddenException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ApiResponse.error(e.getMessage()));
+        }
     }
 }

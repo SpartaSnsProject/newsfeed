@@ -8,6 +8,7 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.*;
 import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
+import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -55,11 +56,15 @@ public class UserService {
     }
 
 
-
     @Transactional
     public UserLoginResponseDto login(UserLoginRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+
+        // 삭제된 회원 체크 추가
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("탈퇴한 회원입니다.");
+        }
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
@@ -130,5 +135,80 @@ public class UserService {
         }
 
         return UserProfileResponseDto.from(user);
+    }
+
+    @Transactional
+    public void changePassword(String displayName, PasswordChangeRequestDto requestDto, String email) {
+        // 1. 대상 사용자 확인
+        User user = userRepository.findByDisplayName(displayName)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        // 2. 현재 로그인한 사용자 확인
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
+
+        // 3. 권한 확인
+        if (!currentUser.getEmail().equals(user.getEmail())) {
+            throw new ForbiddenException("비밀번호 변경 권한이 없습니다.");
+        }
+
+        // 4. 현재 비밀번호 확인
+        if (!passwordEncoder.matches(requestDto.getCurrentPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 5. 새 비밀번호 확인
+        if (!requestDto.getNewPassword().equals(requestDto.getConfirmPassword())) {
+            throw new IllegalArgumentException("새 비밀번호와 확인 비밀번호가 일치하지 않습니다.");
+        }
+
+        // 6. 새 비밀번호가 현재 비밀번호와 같은지 확인
+        if (requestDto.getCurrentPassword().equals(requestDto.getNewPassword())) {
+            throw new IllegalArgumentException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+        }
+
+        // 7. 비밀번호 변경
+        String encodedNewPassword = passwordEncoder.encode(requestDto.getNewPassword());
+        user.updatePassword(encodedNewPassword);
+    }
+
+    @Transactional
+    public void deleteUser(String displayName, String email) {
+        // 1. 대상 사용자 확인
+        User user = userRepository.findByDisplayName(displayName)
+                .orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
+
+        // 2. 현재 로그인한 사용자 확인
+        User currentUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException("로그인이 필요합니다."));
+
+        // 3. 권한 확인
+        if (!currentUser.getEmail().equals(user.getEmail())) {
+            throw new ForbiddenException("회원 탈퇴 권한이 없습니다.");
+        }
+
+        // 4. 이미 탈퇴한 회원인지 확인
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
+        }
+
+        // 5. 소프트 딜리트 수행
+        user.setIsDeleted(true);
+    }
+    // 추가 (고예나)
+    public User findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+    }
+    // 추가 (고예나)
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+    }
+    // 추가 (고예나)
+    public Long findUserIdByEmail(String email) {
+        User user = userRepository.findIdByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+        return user.getId();
     }
 }
