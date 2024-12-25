@@ -18,6 +18,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
 
     Optional<User> findByDisplayName(String displayName);
 
-    Long findUserIdByEmail(@Param("email") String email);
+    Optional<User> findIdByEmail(String email);
 }
 

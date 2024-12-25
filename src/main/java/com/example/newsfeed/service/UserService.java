@@ -207,6 +207,8 @@ public class UserService {
     }
 
     public Long findUserIdByEmail(String email) {
-        return userRepository.findUserIdByEmail(email);
+        User user = userRepository.findIdByEmail(email)
+                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+        return user.getId();
     }
 }

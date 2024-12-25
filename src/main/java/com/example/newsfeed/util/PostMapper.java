@@ -15,7 +15,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .createdAt(post.getCreatedAt())
                 .modifiedAt(post.getModifiedAt())
-                .originalPost(post.isRepost() ? toDto(post.getOriginalPost()) : null)
+                .isOriginal(post.isOriginal())
                 .build();
     }
 }

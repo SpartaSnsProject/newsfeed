@@ -29,17 +29,19 @@ public class Post extends BaseEntity{
 
     private String content;
 
-    private boolean deleted;
+    private boolean isOriginal;
 
     public Post(User user, String content){
         this.user = user;
         this.content = content;
+        this.isOriginal = true;
     }
 
     public Post(User user, String content, Post originalPost) {
         this.user = user;
         this.content = content;
         this.originalPost = originalPost;
+        this.isOriginal = false;
     }
 
     public void updatePost(String content) {
