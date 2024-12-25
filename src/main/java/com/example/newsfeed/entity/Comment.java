@@ -22,11 +22,11 @@ public class Comment extends BaseEntity{
     int commentLikeCount;
 
     @ManyToOne
-    @JoinColumn(name = "post_post")
+    @JoinColumn(name = "post_id")
     Post post;
 
     @ManyToOne
-    @JoinColumn(name = "comment_comment")
+    @JoinColumn(name = "comment_id")
     Comment comment;
 
 

@@ -6,6 +6,7 @@ import com.example.newsfeed.dto.comment.ResponseComment;
 import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -28,7 +29,7 @@ public class CommentController {
 
     @Operation(summary = "댓글추가", description = "새로운 댓글을 추가합니다.")
     @PostMapping
-        public ResponseEntity<ResponseComment> addComment(@RequestBody RequestComment requestComment) {
+        public ResponseEntity<ResponseComment> addComment(@Valid @RequestBody RequestComment requestComment) {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             String username = authentication.getName();
 
@@ -58,7 +59,7 @@ public class CommentController {
 
     @Operation(summary = "댓글 수정", description = "댓글을 수정합니다.")
     @PatchMapping
-    public ResponseEntity<ResponseComment> updateComment(@RequestBody RequestPatchComment comment) {
+    public ResponseEntity<ResponseComment> updateComment(@Valid @RequestBody RequestPatchComment comment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 

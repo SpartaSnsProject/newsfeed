@@ -1,6 +1,5 @@
 package com.example.newsfeed.service;
 
-import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.CommentLike;
 import com.example.newsfeed.repository.CommentRepository;
@@ -19,8 +18,8 @@ public class CommentLikeService {
     }
 
     @Transactional
-    public void addCommentLike(Long id, RequestComment comment) {
-        Comment findComment = commentRepository.findById(comment.getCommentId()).orElseThrow(() -> new RuntimeException("게시물을 찾을수없음"));
+    public void addCommentLike(Long id, Long commentId) {
+        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("게시물을 찾을수없음"));
         findComment.upLikeCount();
         commentRepository.save(findComment);
         commentLikeRepository.save(new CommentLike(findComment,id));

@@ -19,10 +19,10 @@ public class CommentLikeController {
     }
 
     @Operation(summary = "댓글에 좋아요추가",description = "댓글에 좋아요를 추가합니다.")
-    @PostMapping
-    public ResponseEntity<Void> addCommentLike(@RequestBody RequestComment comment, HttpSession session) {
+    @PostMapping("/{comment_id}")
+    public ResponseEntity<Void> addCommentLike(@PathVariable("comment_id") Long commentId, HttpSession session) {
         Long id = (Long) session.getAttribute("id");
-        commentLikeService.addCommentLike(id,comment);
+        commentLikeService.addCommentLike(id,commentId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
