@@ -7,10 +7,12 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.ForbiddenException;
 import com.example.newsfeed.exception.NotFoundException;
 import com.example.newsfeed.repository.PostRepository;
-import com.example.newsfeed.util.PostMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -27,7 +29,7 @@ public class PostService {
 
         postRepository.save(post);
 
-        return PostMapper.toDto(post);
+        return PostResponseDto.from(post);
     }
 
     public PostResponseDto updatePost(PostRequestDto requestDto, Long postId, String email) {
@@ -37,7 +39,7 @@ public class PostService {
 
         post.updatePost(requestDto.getContent());
 
-        return PostMapper.toDto(post);
+        return PostResponseDto.from(post);
     }
 
     public void deletePost(Long postId, String email) {
@@ -85,7 +87,7 @@ public class PostService {
     public List<PostResponseDto> findAllByDisplayName(String displayName) {
         List<Post> posts = postRepository.findAllByUser_DisplayName(displayName);
         return posts.stream()
-                .map(PostMapper::toDto)
+                .map(PostResponseDto::from)
                 .toList();
     }
 
@@ -94,19 +96,37 @@ public class PostService {
         Long userId = userService.findUserIdByEmail(email);
         List<Post> posts = postRepository.findByUser_Id(userId);
         return posts.stream()
-                .map(PostMapper::toDto)
+                .map(PostResponseDto::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
     public PostResponseDto findByPostId(Long postId) {
         Post post = findById(postId);
-        return PostMapper.toDto(post);
+        return PostResponseDto.from(post);
     }
 
     //메서드명(기존이름) getPostById 직관적이지 않음 변경
     public Post findById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글 입니다."));
+    }
+
+    public List<Post> postSuggestion(String username) {
+        User byEmail = userService.findByEmail(username);
+        List<Integer> numbers = new ArrayList<>();
+
+        List<Post> all = postRepository.findAll();
+
+        int size = all.size();
+
+        for (int i = 0; i < size; i++) {
+            if (i==byEmail.getId()) {
+                numbers.add(i);
+            }
+        }
+        Collections.shuffle(numbers);
+        List<Integer> list = numbers.subList(0, 2);
+        return postRepository.findAllByIdIn(list);
     }
 }

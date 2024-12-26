@@ -1,8 +1,10 @@
 package com.example.newsfeed.controller;
 
+import com.example.newsfeed.dto.common.ApiResponse;
 import com.example.newsfeed.dto.post.PostListResponseDto;
 import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.PostResponseDto;
+import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -79,6 +83,13 @@ public class PostController {
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/suggestion")
+    public ResponseEntity<ApiResponse<List<Post>>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        List<Post> posts = postService.postSuggestion(username);
+        return ResponseEntity.ok(ApiResponse.success("랜덤 게시글 10개 조회성공", posts));
+    }
+
     @PutMapping("/{postId}")
     @Operation(
             summary = "포스트 수정",
@@ -90,6 +101,7 @@ public class PostController {
             @PathVariable Long postId,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
+
         String email = userDetails.getUsername();
         PostResponseDto responseDto = postService.updatePost(requestDto, postId, email);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);

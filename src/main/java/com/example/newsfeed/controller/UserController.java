@@ -2,6 +2,7 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.common.ApiResponse;
 import com.example.newsfeed.dto.user.*;
+import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.UnauthorizedException;
 import com.example.newsfeed.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @Tag(name = "User", description = "사용자 관련 API")
@@ -75,6 +78,14 @@ public class UserController {
                 .body(ApiResponse.success("프로필 조회에 성공했습니다.", responseDto));
     }
 
+    @GetMapping("/suggestion")
+    public ResponseEntity<ApiResponse<List<User>>> showSuggestion(
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        List<User> suggestion = userService.findSuggestion(username);
+        return ResponseEntity.ok().body(ApiResponse.success("랜덤 추천 유저 조회성공", suggestion));
+    }
+
 
     @Operation(
             summary = "프로필 수정",
@@ -111,7 +122,6 @@ public class UserController {
             String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
             userService.changePassword(formattedDisplayName, requestDto, userDetails.getUsername());
             return ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.", null));
-
     }
 
     @Operation(

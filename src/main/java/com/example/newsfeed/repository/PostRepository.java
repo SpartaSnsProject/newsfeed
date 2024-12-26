@@ -22,4 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "   SELECT f.following.id FROM Friend f WHERE f.follower.id IN :friendIds" +
             ") ")
     List<Post> findPostsByUser_Id(@Param("userId") Long userId, @Param("friendIds") List<Long> friendIds);
+
+    List<Post> findAllByIdIn(List<Integer> list);
 }

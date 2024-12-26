@@ -39,7 +39,6 @@ public class RepostController {
     }
 
 
-
     @PutMapping("/reposts/{repostId}")
     @Operation(
             summary = "리포스트 수정",

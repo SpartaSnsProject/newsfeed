@@ -12,6 +12,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @Slf4j  // 이 어노테이션 추가
 
 @Service
@@ -234,5 +239,22 @@ public class UserService {
     //추가 (한성우)
     public void delete(User user){
         userRepository.delete(user);
+    }
+
+    public List<User> findSuggestion(String username) {
+        User byEmail = findByEmail(username);
+        List<Integer> numbers = new ArrayList<>();
+
+        List<User> all = userRepository.findAll();
+        int size = all.size();
+
+        for (int i = 0; i < size; i++) {
+            if (i==byEmail.getId()) {
+                numbers.add(i);
+            }
+        }
+        Collections.shuffle(numbers);
+        List<Integer> list = numbers.subList(0, 2);
+        return userRepository.findAllByIdIn(list);
     }
 }

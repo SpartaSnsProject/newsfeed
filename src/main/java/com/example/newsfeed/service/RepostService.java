@@ -5,9 +5,7 @@ import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.RepostResponseDto;
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
-import com.example.newsfeed.exception.UnauthorizedException;
-import com.example.newsfeed.util.RepostMapper;
-import com.example.newsfeed.util.postCont.PostMessages;
+import com.example.newsfeed.exception.ForbiddenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,29 +19,16 @@ public class RepostService {
     private final PostService postService;
 
     public CreateRePostResponse toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
-        Long userId = getUserIdByEmail(email);
+        User user = userService.findByEmail(email);
+
         Post originalPost = postService.findById(originalPostId);
-        User user = userService.findById(userId);
+        Post post = new Post(user, requestDto.getContent(), originalPost);
 
-            Post relatedPost = getRelatedRepost(userId, originalPostId);
-            relatedPost.getOriginalPost().decrementRepostCount();
-            postService.delete(relatedPost);
+        postService.save(post);
 
-            return CreateRePostResponse.from(originalPost);
+        return CreateRePostResponse.from(post);
 
     }
-
-    public RepostResponseDto togglleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
-        Long userId = getUserIdByEmail(email);
-        Post originalPost = postService.findById(originalPostId);
-        User user = userService.findById(userId);
-
-        Post repost = originalPost.repost(user, requestDto.getContent());
-        originalPost.incrementRepostCount();
-        postService.save(repost);
-        return RepostMapper.toDto(repost, originalPost);
-    }
-
 
     public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String email) {
         Long userId = getUserIdByEmail(email);
@@ -53,7 +38,7 @@ public class RepostService {
 
         repost.updatePost(requestDto.getContent());
 
-        return RepostMapper.toDto(repost,repost.getOriginalPost());
+        return RepostResponseDto.from(repost,repost.getOriginalPost());
     }
 
     public void deleteRepost(Long repostId, String email) {
@@ -72,7 +57,7 @@ public class RepostService {
 
     private void validatePostOwnership(Post post, Long userId) {
         if (!post.getUser().getId().equals(userId)) {
-            throw new UnauthorizedException(PostMessages.UN_AUTH_UPDATE);
+            throw new ForbiddenException("이 게시글에 접근 권한이 없습니다.");
         }
     }
 

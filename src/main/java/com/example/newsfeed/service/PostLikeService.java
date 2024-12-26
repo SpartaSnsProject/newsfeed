@@ -14,16 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
+    private final PostRepository postRepository;
     private final PostService postService;
     private final UserService userService;
 
     @Transactional
     public void addPostLike(String username, Long postId) {
 
-        Post findPost = postService.findById(postId);
         User byEmail = userService.findByEmail(username);
+        Post findPost = postService.findById(postId);
 
-        postLikeRepository.save(new PostLike(findPost, byEmail.getId()));
+        postLikeRepository.save(new PostLike(findPost, byEmail.getId() ));
 
         findPost.upPostLike();
 
@@ -42,6 +43,7 @@ public class PostLikeService {
     public void deletePostLike(String userName, Long postId) {
         Post post = postService.findById(postId);
         User byEmail = userService.findByEmail(userName);
+
         postLikeRepository.deleteByPost_PostIdAndUserId(postId, byEmail.getId());
 
         post.downPostLike();

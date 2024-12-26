@@ -81,7 +81,7 @@ public class CommentService {
             Comment save = commentRepository.save(findComment);
             return ResponseComment.from(save);
         } else {
-            throw new RuntimeException("이 댓글에 권한없음 익셉션");
+            throw new ForbiddenException("이 댓글에 권한이 없습니다.");
         }
 
     }
