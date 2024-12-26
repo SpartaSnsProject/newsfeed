@@ -36,7 +36,7 @@ public class CommentService {
         } else if (requestComment.getCommentId() == null) {
 
             Post post = postRepository.findById(requestComment
-                    .getPostId())
+                            .getPostId())
                     .orElseThrow(() -> new RuntimeException("게시물 못찾음"));
             Comment save = commentRepository
                     .save(new Comment(displayName, post, requestComment.getContents()));

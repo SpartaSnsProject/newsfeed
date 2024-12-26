@@ -29,13 +29,13 @@ public class CommentController {
 
     @Operation(summary = "댓글추가", description = "새로운 댓글을 추가합니다.")
     @PostMapping
-        public ResponseEntity<ResponseComment> addComment(@Valid @RequestBody RequestComment requestComment) {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
+    public ResponseEntity<ResponseComment> addComment(@Valid @RequestBody RequestComment requestComment) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-            ResponseComment responseComment = commentService.addComment(requestComment, username);
+        ResponseComment responseComment = commentService.addComment(requestComment, username);
 
-            return new ResponseEntity<>(responseComment, HttpStatus.CREATED);
+        return new ResponseEntity<>(responseComment, HttpStatus.CREATED);
     }
 
     @Operation(summary = "게시물의 댓글조회",description = "게시물에 있는 댓글을 조회합니다.")
@@ -74,6 +74,6 @@ public class CommentController {
         String username = authentication.getName();
 
         ResponseComment responseComment = commentService.deleteComment(commentId, username);
-       return new ResponseEntity<>(responseComment, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(responseComment, HttpStatus.NO_CONTENT);
     }
 }
