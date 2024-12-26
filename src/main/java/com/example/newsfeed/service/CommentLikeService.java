@@ -2,6 +2,7 @@ package com.example.newsfeed.service;
 
 import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.CommentLike;
+import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.CommentLikeRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,24 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
-    private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final CommentService commentService;
 
     @Transactional
-    public void addCommentLike(Long id, Long commentId) {
-        Comment findComment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("게시물을 찾을수없음"));
+    public void addCommentLike(String username, Long commentId) {
+        Comment findComment = commentService.findById(commentId);
+        User byEmail = userService.findByEmail(username);
         findComment.upLikeCount();
-        commentRepository.save(findComment);
-        commentLikeRepository.save(new CommentLike(findComment,id));
+        commentService.save(findComment);
+        commentLikeRepository.save(new CommentLike(findComment,byEmail.getId()));
     }
 
     public int getCommentLike(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("게시물 못찾음 익셉션"));
+        Comment comment = commentService.findById(commentId);
         return comment.getCommentLikeCount();
     }
 
     public void deleteCommentLike(Long userId, Long commentId) {
         commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("댓글 못찾음 익셉션"));
+        Comment comment = commentService.findById(commentId);
         comment.downCommentLike();
+        commentService.save(comment);
     }
 }

@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -49,7 +48,6 @@ public class User extends BaseEntity {
     @Column(name = "tweets_count")
     private int tweetsCount = 0;
 
-    @Setter
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 

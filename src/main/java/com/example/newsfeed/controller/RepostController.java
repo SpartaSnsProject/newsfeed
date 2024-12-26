@@ -1,5 +1,6 @@
 package com.example.newsfeed.controller;
 
+import com.example.newsfeed.dto.post.CreateRePostResponse;
 import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.RepostResponseDto;
 import com.example.newsfeed.service.RepostService;
@@ -27,15 +28,17 @@ public class RepostController {
             description = "원본 포스트의 고유식별자로 로그인한 유저의 리포스트를 생성합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")}
     )
-    public ResponseEntity<RepostResponseDto> createRepost(
+    public ResponseEntity<CreateRePostResponse> createRepost(
             @RequestBody PostRequestDto requestDto,
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long originalPostId
     ) {
         String email = userDetails.getUsername();
-        RepostResponseDto responseDto = repostService.toggleRepost(requestDto, email, originalPostId);
+        CreateRePostResponse responseDto = repostService.toggleRepost(requestDto, email, originalPostId);
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
+
+
 
     @PutMapping("/reposts/{repostId}")
     @Operation(

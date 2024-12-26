@@ -2,20 +2,15 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.common.ApiResponse;
 import com.example.newsfeed.dto.user.*;
-import com.example.newsfeed.exception.user.ForbiddenException;
-import com.example.newsfeed.exception.user.UnauthorizedException;
-import com.example.newsfeed.exception.user.UserNotFoundException;
+import com.example.newsfeed.exception.UnauthorizedException;
 import com.example.newsfeed.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,7 +50,6 @@ public class UserController {
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @GetMapping("/{displayName}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserProfileResponseDto>> getUserProfileByDisplayName(
             @PathVariable String displayName) {
         log.debug("Attempting to retrieve profile for displayName: {}", displayName);
@@ -88,12 +82,11 @@ public class UserController {
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @PutMapping("/{displayName}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserProfileResponseDto>> updateProfile(
             @PathVariable String displayName,
             @Valid @RequestBody UserUpdateRequestDto requestDto,
             @AuthenticationPrincipal UserDetails userDetails) {
-        try {
+
             // displayName에 @ 추가a
             String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
 
@@ -101,19 +94,6 @@ public class UserController {
 
             UserProfileResponseDto responseDto = userService.updateProfileByDisplayName(formattedDisplayName, requestDto, userDetails.getUsername());
             return ResponseEntity.ok(ApiResponse.success("프로필이 성공적으로 수정되었습니다.", responseDto));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (ForbiddenException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.error(e.getMessage()));
-        }
 
     }
 
@@ -123,28 +103,15 @@ public class UserController {
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @PutMapping("/{displayName}/password")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<String>> changePassword(
             @PathVariable String displayName,
             @Valid @RequestBody PasswordChangeRequestDto requestDto,
             @AuthenticationPrincipal UserDetails userDetails) {
-        try {
+
             String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
             userService.changePassword(formattedDisplayName, requestDto, userDetails.getUsername());
             return ResponseEntity.ok(ApiResponse.success("비밀번호가 성공적으로 변경되었습니다.", null));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (ForbiddenException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ApiResponse.error(e.getMessage()));
-        }
+
     }
 
     @Operation(
@@ -153,23 +120,13 @@ public class UserController {
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
     @DeleteMapping("/{displayName}")
-    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<String>> deleteUser(
             @PathVariable String displayName,
             @AuthenticationPrincipal UserDetails userDetails) {
-        try {
+
             String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
             userService.deleteUser(formattedDisplayName, userDetails.getUsername());
             return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다.", null));
-        } catch (UserNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponse.error(e.getMessage()));
-        } catch (ForbiddenException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponse.error(e.getMessage()));
-        }
+
     }
 }

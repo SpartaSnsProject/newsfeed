@@ -2,6 +2,7 @@ package com.example.newsfeed.service;
 
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.PostLike;
+import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.PostLikeRepository;
 import com.example.newsfeed.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,26 +14,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class PostLikeService {
 
     private final PostLikeRepository postLikeRepository;
-    private final PostRepository postRepository;
+    private final PostService postService;
+    private final UserService userService;
 
     @Transactional
-    public void addPostLike(Long id, Long postId) {
-        Post findPost = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글을 찾을수 없음"));
+    public void addPostLike(String username, Long postId) {
+
+        Post findPost = postService.findById(postId);
+        User byEmail = userService.findByEmail(username);
+
+        postLikeRepository.save(new PostLike(findPost, byEmail.getId()));
+
         findPost.upPostLike();
-        postRepository.save(findPost);
-        postLikeRepository.save(new PostLike(findPost, id));
+
+        postService.save(findPost);
+
     }
 
     public int getPostLike(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글을 찾을수 없음"));
+
+        Post post = postService.findById(postId);
 
         return post.getPostLikeCount();
     }
 
     @Transactional
-    public void deletePostLike(Long userId, Long postId) {
-        postLikeRepository.deleteByPost_PostIdAndUserId(postId, userId);
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글 못찾음 익셉션"));
+    public void deletePostLike(String userName, Long postId) {
+        Post post = postService.findById(postId);
+        User byEmail = userService.findByEmail(userName);
+        postLikeRepository.deleteByPost_PostIdAndUserId(postId, byEmail.getId());
+
         post.downPostLike();
+        postService.save(post);
     }
 }

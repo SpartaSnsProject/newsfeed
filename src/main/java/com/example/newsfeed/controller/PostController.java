@@ -61,7 +61,7 @@ public class PostController {
     public ResponseEntity<PostListResponseDto> findByDisplayId(
             @PathVariable String displayName
     ) {
-        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findByDisplayName(displayName));
+        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findAllByDisplayName(displayName));
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
     }
 

@@ -1,10 +1,11 @@
 package com.example.newsfeed.service;
 
+import com.example.newsfeed.dto.post.CreateRePostResponse;
 import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.RepostResponseDto;
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
-import com.example.newsfeed.exception.user.UnauthorizedException;
+import com.example.newsfeed.exception.UnauthorizedException;
 import com.example.newsfeed.util.RepostMapper;
 import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
@@ -19,28 +20,34 @@ public class RepostService {
     private final UserService userService;
     private final PostService postService;
 
-    public RepostResponseDto toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
+    public CreateRePostResponse toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
         Long userId = getUserIdByEmail(email);
-        Post originalPost = postService.getPostById(originalPostId);
+        Post originalPost = postService.findById(originalPostId);
         User user = userService.findById(userId);
 
-        if(isRepost(userId, originalPostId)){
             Post relatedPost = getRelatedRepost(userId, originalPostId);
             relatedPost.getOriginalPost().decrementRepostCount();
             postService.delete(relatedPost);
-            return RepostMapper.toDto(null, originalPost);
 
-        } else {
-            Post repost = originalPost.repost(user, requestDto.getContent());
-            originalPost.incrementRepostCount();
-            postService.save(repost);
-            return RepostMapper.toDto(repost, originalPost);
-        }
+            return CreateRePostResponse.from(originalPost);
+
     }
+
+    public RepostResponseDto togglleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
+        Long userId = getUserIdByEmail(email);
+        Post originalPost = postService.findById(originalPostId);
+        User user = userService.findById(userId);
+
+        Post repost = originalPost.repost(user, requestDto.getContent());
+        originalPost.incrementRepostCount();
+        postService.save(repost);
+        return RepostMapper.toDto(repost, originalPost);
+    }
+
 
     public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String email) {
         Long userId = getUserIdByEmail(email);
-        Post repost = postService.getPostById(repostId);
+        Post repost = postService.findById(repostId);
 
         validatePostOwnership(repost, userId);
 
@@ -51,7 +58,7 @@ public class RepostService {
 
     public void deleteRepost(Long repostId, String email) {
         Long userId = getUserIdByEmail(email);
-        Post repost = postService.getPostById(repostId);
+        Post repost = postService.findById(repostId);
 
         validatePostOwnership(repost, userId);
 

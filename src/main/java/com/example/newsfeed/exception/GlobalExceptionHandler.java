@@ -1,18 +1,11 @@
 package com.example.newsfeed.exception;
 
 import com.example.newsfeed.dto.common.ApiResponse;
-import com.example.newsfeed.exception.post.PostNotFoundException;
-import com.example.newsfeed.exception.user.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -23,21 +16,25 @@ public class GlobalExceptionHandler {
     // 사용자명 중복 예외 처리
     @ExceptionHandler(DuplicateUsernameException.class)
     public ResponseEntity<String> handleDuplicateUsername(DuplicateUsernameException e) {
-        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // 이메일 중복 예외 처리
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDuplicateEmail(DuplicateEmailException e) {
-        return ResponseEntity.badRequest()
-                .body(ApiResponse.error(e.getMessage()));
+    public ResponseEntity<String> handleDuplicateEmail(DuplicateEmailException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     // 기타 모든 예외 처리
-   @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleAllException(Exception e) {
-        return ResponseEntity.internalServerError()
-                .body(ApiResponse.error("서버 내부 오류가 발생했습니다."));
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAllException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    // 인증이 필요한 접근
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<String> handleUnauthorized(UnauthorizedException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     //유저로그인 에러반환
@@ -47,28 +44,17 @@ public class GlobalExceptionHandler {
                 .body(ApiResponse.error(e.getMessage()));
     }
 
-    //유저 프로필 조회 에러반환
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUserNotFound(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ApiResponse.error(e.getMessage()));
-    }
-
-    @ExceptionHandler(UnauthorizedException.class)
-    public ResponseEntity<ApiResponse<Void>> handleUnauthorized(UnauthorizedException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ApiResponse.error(e.getMessage()));
-    }
     // ForbiddenException 핸들러 추가
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ApiResponse<Void>> handleForbidden(ForbiddenException e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ApiResponse.error(e.getMessage()));
+    public ResponseEntity<String> handleForbidden(ForbiddenException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(PostNotFoundException.class)
-    public ResponseEntity<String> handleAuthenticationException(PostNotFoundException ex) {
-        return ResponseEntity.status(ex.getHttpStatus())
-                .body(ex.getFailReason());
+    //대이터베이스에서 찾을수 없는 예외
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<String> handleUserNotFound(NotFoundException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+
 }

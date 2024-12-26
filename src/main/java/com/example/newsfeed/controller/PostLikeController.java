@@ -3,41 +3,55 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.service.PostLikeService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/post_like")
+@RequiredArgsConstructor
 public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    public PostLikeController(PostLikeService postLikeService) {
-        this.postLikeService = postLikeService;
-    }
-
-    @Operation(summary = "게시물좋아요추가",description = "게시물에 좋아요를 추가합니다.")
+    @Operation(summary = "게시물좋아요추가",
+            description = "게시물에 좋아요를 추가합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @PostMapping("/{post_id}")
-    public ResponseEntity<Void> addPostLike(@PathVariable("post_id") Long postId, HttpSession session) {
-        Long id = (Long) session.getAttribute("id");
-        postLikeService.addPostLike(id,postId);
+    public ResponseEntity<Void> addPostLike(
+            @PathVariable("post_id") Long postId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        String username = userDetails.getUsername();
+        postLikeService.addPostLike(username,postId);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(summary = "게시물좋아요",description = "게시물에 좋아요를 추가합니다.")
+    @Operation(summary = "게시물좋아요",
+            description = "게시물에 좋아요를 추가합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/{post_id}")
-    public ResponseEntity<Integer> getCommentLIke(@PathVariable("post_id") Long postLike) {
+    public ResponseEntity<Integer> getCommentLIke(
+            @PathVariable("post_id") Long postLike
+    ) {
         int commentLike = postLikeService.getPostLike(postLike);
         return new ResponseEntity<>(commentLike,HttpStatus.OK);
     }
 
-    @Operation(summary = "게시물좋아요삭제.",description = "게시물에 좋아요를 삭제합니다.")
+    @Operation(summary = "게시물좋아요삭제.",
+            description = "게시물에 좋아요를 삭제합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @DeleteMapping("/{post_id}")
-    public ResponseEntity<Void> deletePostLike(@PathVariable("post_id") Long postId, HttpSession session) {
-        Long id = (Long) session.getAttribute("id");
-        postLikeService.deletePostLike(id,postId);
+    public ResponseEntity<Void> deletePostLike(
+            @PathVariable("post_id") Long postId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userDetails.getUsername();
+        postLikeService.deletePostLike(username,postId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

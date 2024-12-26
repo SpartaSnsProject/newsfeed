@@ -7,7 +7,8 @@ import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
-import com.example.newsfeed.exception.user.UserNotFoundException;
+import com.example.newsfeed.exception.ForbiddenException;
+import com.example.newsfeed.exception.NotFoundException;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.PostRepository;
 import com.example.newsfeed.repository.UserRepository;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,30 +24,26 @@ import java.util.Optional;
 public class CommentService {
     private final CommentRepository commentRepository;
 
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
+    private final UserService userService;
+    private final PostService postService;
 
     public ResponseComment addComment(RequestComment requestComment, String username) {
-        User user = userRepository
-                .findByEmail(username)
-                .orElseThrow(() -> new RuntimeException("유저 못찾음"));
-        String displayName = user.getDisplayName();
+        User byEmail = userService.findByEmail(username);
+        String displayName = byEmail.getDisplayName();
 
         if (requestComment.getCommentId() == null && requestComment.getPostId() == null) {
             throw new RuntimeException("요청 제대로 안함 익셉션");
         } else if (requestComment.getCommentId() == null) {
 
-            Post post = postRepository.findById(requestComment
-                            .getPostId())
-                    .orElseThrow(() -> new RuntimeException("게시물 못찾음"));
+            Post byId = postService.findById(requestComment.getPostId());
+
             Comment save = commentRepository
-                    .save(new Comment(displayName, post, requestComment.getContents()));
-            post.upCommentCount();
+                    .save(new Comment(displayName,byId, requestComment.getContents()));
+            byId.upCommentCount();
 
             return ResponseComment.from(save);
         } else if (requestComment.getPostId() == null) {
-
-            Comment comment = commentRepository.findById(requestComment.getCommentId()).orElseThrow(() -> new RuntimeException("댓글을 못찾음"));
+            Comment comment = findById(requestComment.getCommentId());
             Comment save = commentRepository.save(new Comment(displayName, comment, requestComment.getContents()));
             comment.upReCommentCount();
 
@@ -58,8 +54,8 @@ public class CommentService {
     }
 
     public List<ResponseComment> getCommentByPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("아 게시물 없다고"));
-        List<Comment> commentList= commentRepository.findAllByPost(post);
+        Post byId = postService.findById(postId);
+        List<Comment> commentList= commentRepository.findAllByPost(byId);
 
         return commentList.stream()
                 .map(ResponseComment::from)
@@ -67,7 +63,7 @@ public class CommentService {
     }
 
     public List<ResponseComment> getCommentByComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("댓글을 못찾겠음"));
+        Comment comment = findById(commentId);
         List<Comment> allByComment = commentRepository.findAllByComment(comment);
 
         return allByComment.stream()
@@ -76,10 +72,11 @@ public class CommentService {
     }
 
     public ResponseComment updateComment(RequestPatchComment comment, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("유저못찾음"));
-        Comment findComment = commentRepository.findById(comment.getCommentId()).orElseThrow(() -> new RuntimeException("댓글못찾음"));
 
-        if (user.getDisplayName().equals(findComment.getDisplayName())) {
+        User byEmail = userService.findByEmail(username);
+        Comment findComment = findById(comment.getCommentId());
+
+        if (byEmail.getDisplayName().equals(findComment.getDisplayName())) {
             findComment.setContents(comment.getContents());
             Comment save = commentRepository.save(findComment);
             return ResponseComment.from(save);
@@ -90,26 +87,31 @@ public class CommentService {
     }
 
     public ResponseComment deleteComment(Long commentId, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("댓글못찾음익셉션"));
+        User user = userService.findByEmail(username);
+        Comment comment = findById(commentId);
 
         if (user.getDisplayName().equals(comment.getDisplayName())) {
-            if (comment.getPost() == null && comment.getComment()==null) {
-                throw new RuntimeException("그런데 이건 일어날수없는일인 익셉션인것임");
-            } else if (comment.getPost() == null) {
-                Comment byComment = commentRepository.findByComment(comment);
-                byComment.downReCommentCount();
-                commentRepository.deleteById(commentId);
-                return ResponseComment.from(comment);
-            } else {
-                Post post = postRepository.findById(comment.getPost().getPostId()).orElseThrow(() -> new RuntimeException("게시물 못찾음 익셉션"));
-                post.downCommentCount();
-                commentRepository.deleteById(commentId);
-                return ResponseComment.from(comment);
-            }
 
+             if (comment.getPost() == null) {
+                 Comment byComment = commentRepository.findByComment(comment);
+                 byComment.downReCommentCount();
+                 commentRepository.save(byComment);
+             } else {
+                Post post = postService.findById(comment.getPost().getPostId());
+                post.downCommentCount();
+             }
+            commentRepository.deleteById(commentId);
+            return ResponseComment.from(comment);
         } else {
-            throw new RuntimeException("이 댓글에 권한없음 익셉션");
+            throw new ForbiddenException("이 댓글에 권한이 없습니다.");
         }
+    }
+
+    public Comment findById(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() -> new NotFoundException("댓글못찾음익셉션"));
+    }
+
+    public void save(Comment findComment) {
+        commentRepository.save(findComment);
     }
 }
