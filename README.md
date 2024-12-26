@@ -3,11 +3,11 @@
 2. [Wireframe](#wireframe)
 3. [Erd](#erd)
 4. [API 명세서](#api-명세서)
-   1. [1. 사용자(User) API](#1-사용자user-api)
-   2. [2. 게시글(Post) API](#2-게시글post-api)
-   3. [3. 댓글(Comment) API](#3-댓글comment-api)
-   4. [4. 친구(Comment) API](#4-친구friend-api)
-   5. [5. 좋아요(Like) API](#5-좋아요like-api)
+    1. [1. 사용자(User) API](#1-사용자user-api)
+    2. [2. 게시글(Post) API](#2-게시글post-api)
+    3. [3. 댓글(Comment) API](#3-댓글comment-api)
+    4. [4. 친구(Comment) API](#4-친구friend-api)
+    5. [5. 좋아요(Like) API](#5-좋아요like-api)
 
 # Commit Message Convention
 
@@ -17,13 +17,13 @@
 태그 : 제목의 형태이며, :뒤에만 space가 있음에 유의한다.
 내용은 간단하게 영어로 작성
 
-feat : 새로운 기능 추가 
-fix : 버그 수정 
-docs : 문서 수정 
-style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
-refactor : 코드 리펙토링 
-test : 테스트 코드, 리펙토링 테스트 코드 추가 
-chore : 빌드 업무 수정, 패키지 매니저 수정
+Feat : 새로운 기능 추가 
+Fix : 버그 수정 
+Docs : 문서 수정 
+Style : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우 
+Refactor : 코드 리펙토링 
+Test : 테스트 코드, 리펙토링 테스트 코드 추가 
+Chore : 빌드 업무 수정, 패키지 매니저 수정
 ```
 
 # Wireframe
@@ -62,8 +62,6 @@ erDiagram
     }
     FRIEND {
         Long id PK
-        Long follower FK
-        Long following FK
     }
     POSTLIKE {
         Long id PK
@@ -80,14 +78,13 @@ erDiagram
     POST ||--o{ POSTLIKE : "receives"
     COMMENT ||--o{ COMMENTLIKE : "receives"
     FRIEND ||--o{ USER : "friends with"
-    %% 유니크 제약 조건
+%% 유니크 제약 조건
     POSTLIKE {
         userId UNIQUE
     }
 ```
 
 # API 명세서
-## 401은 global 설정 예정입니다.
 
 ## 1. 사용자(User) API
 
@@ -117,7 +114,7 @@ erDiagram
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
-- **Request Body**: 
+- **Request Body**: (업데이트할 필드만 포함)
     ```json
     {
       "displayName": "string",
@@ -134,18 +131,6 @@ erDiagram
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 사용자가 존재하지 않음
-
-### 1.5 비밀번호 변경
-- **PUT** `/api/password/{id}`
-- **Request Body**: 
-    ```json
-    {
-      "password": "string",
-    }
-    ```
-- **Response**:
-    - **204 No Content**: 패스워드 변경 성공
-    - **403 Not Found**: 사용자의 비밀번호가 다름
 
 ---
 
@@ -239,8 +224,7 @@ erDiagram
 - **Request Body**:
     ```json
     {
-      "follower": "Long",
-      "following": "Long"
+  "id": "Long"
     }
     ```
 - **Response**:
@@ -248,18 +232,47 @@ erDiagram
     - **400 Bad Request**: 유효하지 않은 입력
     - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
-### 4.2 친구 관계 조회
-- **GET** `/api/friends/{id}`
+### 4.2 내가 팔로우하는 사용자 조회
+- **GET** `/api/follow/following`
 - **Response**:
-    - **200 OK**: 친구 관계 정보
-    - **404 Not Found**: 친구 관계가 존재하지 않음
+    - **200 OK**: 내가 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followingUsers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 팔로우하는 사용자가 존재하지 않음
 
-### 4.3 친구 관계 삭제
-- **DELETE** `/api/friends/{id}`
+### 4.3 나를 팔로우하는 사용자 조회
+- **GET** `/api/follow/follower`
+- **Response**:
+    - **200 OK**: 나를 팔로우하는 사용자 목록
+    - **Content**:
+    ```json
+    {
+      "followers": [
+        {
+          "follower": { "id": "Long", "name": "string" },
+          "following": { "id": "Long", "name": "string" }
+        }
+      ]
+    }
+    ```
+    - **404 Not Found**: 나를 팔로우하는 사용자가 존재하지 않음
+
+### 4.4 친구 관계 삭제
+- **DELETE** `/api/follow`
+- **Request Header**:
+    - `Authorization`: 팔로우할 사용자의 ID
 - **Response**:
     - **204 No Content**: 삭제 성공
     - **404 Not Found**: 친구 관계가 존재하지 않음
-
 ---
 
 ## 5. 좋아요(Like) API
@@ -288,16 +301,40 @@ erDiagram
     - **201 Created**: 생성된 좋아요 정보
     - **400 Bad Request**: 유효하지 않은 입력
 
-### 5.3 좋아요 삭제
+### 5.3 게시글 좋아요 수 조회
+- **GET** `/api/postlikes/{post_id}`
+- **Response**:
+    - **200 OK**: 게시글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 게시글이 존재하지 않음
+
+### 5.4 댓글 좋아요 수 조회
+- **GET** `/api/commentlikes/{comment_id}`
+- **Response**:
+    - **200 OK**: 댓글의 좋아요 수
+    - **Content**:
+    ```json
+    {
+      "likeCount": "int"
+    }
+    ```
+    - **404 Not Found**: 댓글이 존재하지 않음
+
+### 5.5 게시글 좋아요 삭제
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
-    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
 
-### 5.4 댓글 좋아요 삭제
+### 5.6 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
     - **204 No Content**: 삭제 성공
-    - **403 Not Found**: 내가 만든 좋아요가 아닌 경우
+    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
     - **404 Not Found**: 좋아요가 존재하지 않음
