@@ -90,6 +90,20 @@ public class PostController {
         return new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
     }
 
+    @GetMapping("/timeline")
+    @Operation(
+            summary = "타임라인 목록 조회",
+            description = "로그인한 유저의 포스트 목록을 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")}
+    )
+    public ResponseEntity<PostListResponseDto> findTimeline(
+            @AuthenticationPrincipal UserDetails userDetails
+    ){
+        String email = userDetails.getUsername();
+        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findTimeline(email));
+        return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
+    }
+
     @PutMapping("/{postId}")
     @Operation(
             summary = "포스트 수정",

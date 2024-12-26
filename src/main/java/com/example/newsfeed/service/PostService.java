@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -22,6 +23,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final FriendService friendService;
 
     public PostResponseDto createPost(PostRequestDto requestDto, String email) {
         User user = userService.findByEmail(email);
@@ -30,6 +32,19 @@ public class PostService {
         postRepository.save(post);
 
         return PostResponseDto.from(post);
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponseDto>  findTimeline(String email) {
+        User user = userService.findByEmail(email);
+        Long followerId = user.getId();
+        List<Long> friendIds = friendService.findFollowingIds(user);
+        List<Post> posts = postRepository.findPostsByUser_Id(followerId, friendIds);
+
+        return posts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
+                .map(PostResponseDto::from)
+                .toList();
     }
 
     public PostResponseDto updatePost(PostRequestDto requestDto, Long postId, String email) {
@@ -87,6 +102,7 @@ public class PostService {
     public List<PostResponseDto> findAllByDisplayName(String displayName) {
         List<Post> posts = postRepository.findAllByUser_DisplayName(displayName);
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
                 .map(PostResponseDto::from)
                 .toList();
     }
@@ -96,6 +112,7 @@ public class PostService {
         Long userId = userService.findUserIdByEmail(email);
         List<Post> posts = postRepository.findByUser_Id(userId);
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedAt).reversed())
                 .map(PostResponseDto::from)
                 .toList();
     }

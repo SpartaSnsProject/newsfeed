@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -98,5 +99,12 @@ public class FriendService {
        return userService.findByIdIn(list);
 
 
+    }
+
+    public List<Long> findFollowingIds(User user){
+        List<Friend> friends = friendRepository.findAllByFollower(user);
+        return friends.stream()
+                .map(friend -> friend.getFollowing().getId())
+                .collect(Collectors.toList());
     }
 }
