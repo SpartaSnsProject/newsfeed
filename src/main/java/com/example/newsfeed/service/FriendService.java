@@ -27,6 +27,9 @@ public class FriendService {
 
         User followingUser = userRepository.findByDisplayName(displayName).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
+        if (followUser.getId() == followingUser.getId()) {
+            throw new RuntimeException("자기자신을 팔로우할수없음 익셉션");
+        }
         friendRepository.save(new Friend(followUser, followingUser));
 
         followUser.upFollowingCount();

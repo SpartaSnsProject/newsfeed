@@ -21,6 +21,9 @@ public class Comment extends BaseEntity{
     @Column(name = "like_count")
     int commentLikeCount;
 
+
+    int reCommentCount;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     Post post;
@@ -48,5 +51,13 @@ public class Comment extends BaseEntity{
 
     public void downCommentLike() {
         commentLikeCount--;
+    }
+
+    public void upReCommentCount(){
+        reCommentCount++;
+    }
+
+    public void downReCommentCount() {
+        reCommentCount--;
     }
 }

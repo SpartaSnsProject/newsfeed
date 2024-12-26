@@ -26,6 +26,9 @@ public class Post extends BaseEntity{
     @Column(name = "like_count")
     private int postLikeCount;
 
+    @Column(name = "comment_count")
+    private int commentCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -79,6 +82,13 @@ public class Post extends BaseEntity{
 
     public void downPostLike() {
         postLikeCount--;
+    }
+
+    public void upCommentCount() {
+        commentCount++;
+    }
+    public void downCommentCount() {
+        commentCount--;
     }
 }
 
