@@ -23,12 +23,19 @@ public class RepostService {
         Long userId = getUserIdByEmail(email);
         Post originalPost = postService.getPostById(originalPostId);
         User user = userService.findById(userId);
-        Post repost = originalPost.repost(user, requestDto.getContent());
 
-        originalPost.incrementRepostCount();
-        postService.save(repost);
+        if(isRepost(userId, originalPostId)){
+            Post relatedPost = getRelatedRepost(userId, originalPostId);
+            relatedPost.getOriginalPost().decrementRepostCount();
+            postService.delete(relatedPost);
+            return RepostMapper.toDto(null, originalPost);
 
-        return RepostMapper.toDto(repost, originalPost);
+        } else {
+            Post repost = originalPost.repost(user, requestDto.getContent());
+            originalPost.incrementRepostCount();
+            postService.save(repost);
+            return RepostMapper.toDto(repost, originalPost);
+        }
     }
 
     public RepostResponseDto updateRepost(Long repostId, PostRequestDto requestDto, String email) {
@@ -60,6 +67,14 @@ public class RepostService {
         if (!post.getUser().getId().equals(userId)) {
             throw new UnauthorizedException(PostMessages.UN_AUTH_UPDATE);
         }
+    }
+
+    private boolean isRepost(Long userId, Long originalPostId) {
+        return postService.isRepost(userId, originalPostId);
+    }
+
+    private Post getRelatedRepost(Long userId, Long originalPostId) {
+        return postService.getRelatedRepost(userId, originalPostId);
     }
 }
 

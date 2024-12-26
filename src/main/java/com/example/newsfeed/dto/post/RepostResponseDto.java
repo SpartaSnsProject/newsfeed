@@ -17,7 +17,7 @@ public class RepostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Long originalPostId;
-    private String originalPostUserName;
+    private String originalPostUsername;
     private String originalDisplayName;
     private String originalPostContent;
     private int repostCount;

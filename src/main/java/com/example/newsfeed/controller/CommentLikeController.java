@@ -1,7 +1,6 @@
 package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.like.RequestComment;
-import com.example.newsfeed.service.CommentLikeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

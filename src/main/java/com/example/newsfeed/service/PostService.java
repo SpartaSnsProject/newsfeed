@@ -99,4 +99,12 @@ public class PostService {
     public void delete(Post post){
         postRepository.delete(post);
     }
+
+    public boolean isRepost(Long userId, Long originalPostId) {
+        return postRepository.existsByUser_IdAndOriginalPost_PostId(userId, originalPostId);
+    }
+
+    public Post getRelatedRepost(Long userId, Long originalPostId) {
+        return postRepository.findByUser_IdAndOriginalPost_PostId(userId, originalPostId);
+    }
 }
