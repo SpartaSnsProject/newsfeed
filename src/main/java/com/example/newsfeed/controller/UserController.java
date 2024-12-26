@@ -132,11 +132,13 @@ public class UserController {
     @DeleteMapping("/{displayName}")
     public ResponseEntity<ApiResponse<String>> deleteUser(
             @PathVariable String displayName,
-            @AuthenticationPrincipal UserDetails userDetails) {
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid UserDeleteRequestDto userDeleteRequestDto) {
 
-            String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
-            userService.deleteUser(formattedDisplayName, userDetails.getUsername());
-            return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다.", null));
+        String formattedDisplayName = displayName.startsWith("@") ? displayName : "@" + displayName;
 
+        userService.deleteUser(formattedDisplayName, userDetails.getUsername(), userDeleteRequestDto.getPassword());
+
+        return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다.", null));
     }
 }
