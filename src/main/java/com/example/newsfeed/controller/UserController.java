@@ -80,13 +80,13 @@ public class UserController {
         return ResponseEntity.ok()
                 .body(ApiResponse.success("프로필 조회에 성공했습니다.", responseDto));
     }
+
+
     @Operation(
             summary = "프로필 수정",
             description = "사용자 프로필을 수정합니다. 자신의 아이디로 로그인한 diplayName만 수정기능이 동작합니다.",
             security = { @SecurityRequirement(name = "Bearer Authentication") }
     )
-
-
     @PutMapping("/{displayName}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<UserProfileResponseDto>> updateProfile(

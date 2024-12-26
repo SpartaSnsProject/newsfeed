@@ -22,6 +22,10 @@ public class Post extends BaseEntity{
     @JoinColumn(name = "user_id")
     private User user;
 
+
+    @Column(name = "like_count")
+    private int postLikeCount;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "original_post_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -30,6 +34,7 @@ public class Post extends BaseEntity{
     private String content;
 
     private boolean isOriginal;
+
 
     private int repostCount = 0;
 
@@ -52,6 +57,14 @@ public class Post extends BaseEntity{
 
     public Post repost(User user, String content) {
         return new Post(user, content, this);
+    }
+
+
+    public boolean isRepost() {
+        return originalPost != null;
+    }
+    public void upPostLike() {
+        postLikeCount++;
     }
 
     public void incrementRepostCount() {

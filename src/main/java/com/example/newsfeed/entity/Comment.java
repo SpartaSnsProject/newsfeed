@@ -1,13 +1,14 @@
 package com.example.newsfeed.entity;
 
-import com.example.newsfeed.dto.like.RequestComment;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
+@NoArgsConstructor
 @Entity
-public class Comment {
+public class Comment extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -17,20 +18,17 @@ public class Comment {
     @Setter
     String contents;
 
-    @Column(name = "reply_count")
-    int replyCount;
+    @Column(name = "like_count")
+    int commentLikeCount;
 
     @ManyToOne
-    @JoinColumn(name = "post_post")
+    @JoinColumn(name = "post_id")
     Post post;
 
     @ManyToOne
-    @JoinColumn(name = "comment_comment")
+    @JoinColumn(name = "comment_id")
     Comment comment;
 
-
-    public Comment() {
-    }
 
     public Comment(String displayName, Post post, String contents) {
         this.displayName = displayName;
@@ -42,5 +40,9 @@ public class Comment {
         this.displayName= displayName;
         this.comment = comment;
         this.contents = contents;
+    }
+
+    public void upLikeCount(){
+        this.commentLikeCount++;
     }
 }

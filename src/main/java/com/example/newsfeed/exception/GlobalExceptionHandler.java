@@ -22,9 +22,8 @@ public class GlobalExceptionHandler {
 
     // 사용자명 중복 예외 처리
     @ExceptionHandler(DuplicateUsernameException.class)
-    public ResponseEntity<ApiResponse<Void>> handleDuplicateUsername(DuplicateUsernameException e) {
-        return ResponseEntity.badRequest()
-                .body(ApiResponse.error(e.getMessage()));
+    public ResponseEntity<String> handleDuplicateUsername(DuplicateUsernameException e) {
+        return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
     // 이메일 중복 예외 처리
