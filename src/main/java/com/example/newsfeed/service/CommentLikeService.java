@@ -29,5 +29,7 @@ public class CommentLikeService {
 
     public void deleteCommentLike(Long userId, Long commentId) {
         commentLikeRepository.deleteByCommentIdAndUserId(commentId, userId);
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("댓글 못찾음 익셉션"));
+        comment.downCommentLike();
     }
 }

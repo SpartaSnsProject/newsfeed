@@ -28,6 +28,9 @@ public class FriendService {
         User followingUser = userRepository.findByDisplayName(displayName).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
         friendRepository.save(new Friend(followUser, followingUser));
+
+        followUser.upFollowingCount();
+        followingUser.upFollowerCount();
     }
 
     public List<ResponseFriend> getFollowing(String followEmail) {
@@ -51,5 +54,8 @@ public class FriendService {
         User followingUser = userRepository.findByDisplayName(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
         friendRepository.deleteByFollowerAndFollowing(followUser,followingUser);
+
+        followUser.downFollowingCount();
+        followingUser.downFollowerCount();
     }
 }

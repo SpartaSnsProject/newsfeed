@@ -94,4 +94,26 @@ public class User extends BaseEntity {
     public void updatePassword(String newPassword) {
         this.password = newPassword;
     }
+
+    public void upFollowingCount() {
+        followingCount++;
+    }
+    public void upFollowerCount(){
+        followersCount++;
+    }
+    public void downFollowingCount(){
+        if (followingCount <= 0) {
+            followingCount--;
+        } else {
+            throw new RuntimeException("팔로잉은 마이너스가 없소 익셉션");
+        }
+    }
+    public void downFollowerCount() {
+        if (followersCount <= 0) {
+            followersCount--;
+        } else {
+            throw new RuntimeException("팔로워는 마이너스가 없소 익셉션");
+        }
+
+    }
 }

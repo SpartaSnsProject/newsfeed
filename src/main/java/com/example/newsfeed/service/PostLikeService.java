@@ -29,7 +29,10 @@ public class PostLikeService {
         return post.getPostLikeCount();
     }
 
+    @Transactional
     public void deletePostLike(Long userId, Long postId) {
         postLikeRepository.deleteByPost_PostIdAndUserId(postId, userId);
+        Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("게시글 못찾음 익셉션"));
+        post.downPostLike();
     }
 }

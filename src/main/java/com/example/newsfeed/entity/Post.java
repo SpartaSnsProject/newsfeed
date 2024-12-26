@@ -76,5 +76,9 @@ public class Post extends BaseEntity{
             repostCount--;
         }
     }
+
+    public void downPostLike() {
+        postLikeCount--;
+    }
 }
 

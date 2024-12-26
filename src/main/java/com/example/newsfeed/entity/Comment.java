@@ -45,4 +45,8 @@ public class Comment extends BaseEntity{
     public void upLikeCount(){
         this.commentLikeCount++;
     }
+
+    public void downCommentLike() {
+        commentLikeCount--;
+    }
 }
