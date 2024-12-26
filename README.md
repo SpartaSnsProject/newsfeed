@@ -3,11 +3,11 @@
 2. [Wireframe](#wireframe)
 3. [Erd](#erd)
 4. [API 명세서](#api-명세서)
-    1. [1. 사용자(User) API](#1-사용자user-api)
-    2. [2. 게시글(Post) API](#2-게시글post-api)
-    3. [3. 댓글(Comment) API](#3-댓글comment-api)
-    4. [4. 친구(Comment) API](#4-친구friend-api)
-    5. [5. 좋아요(Like) API](#5-좋아요like-api)
+  1. [1. 사용자(User) API](#1-사용자user-api)
+  2. [2. 게시글(Post) API](#2-게시글post-api)
+  3. [3. 댓글(Comment) API](#3-댓글comment-api)
+  4. [4. 친구(Comment) API](#4-친구friend-api)
+  5. [5. 좋아요(Like) API](#5-좋아요like-api)
 
 # Commit Message Convention
 
@@ -103,14 +103,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 사용자 정보
-    - **400 Bad Request**: 유효하지 않은 입력
+  - **201 Created**: 생성된 사용자 정보
+  - **400 Bad Request**: 유효하지 않은 입력
 
 ### 1.2 사용자 조회
 - **GET** `/api/users/{id}`
 - **Response**:
-    - **200 OK**: 사용자 정보
-    - **404 Not Found**: 사용자가 존재하지 않음
+  - **200 OK**: 사용자 정보
+  - **404 Not Found**: 사용자가 존재하지 않음
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
@@ -123,14 +123,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **200 OK**: 업데이트된 사용자 정보
-    - **404 Not Found**: 사용자가 존재하지 않음
+  - **200 OK**: 업데이트된 사용자 정보
+  - **404 Not Found**: 사용자가 존재하지 않음
 
 ### 1.4 사용자 삭제
 - **DELETE** `/api/users/{id}`
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **404 Not Found**: 사용자가 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **404 Not Found**: 사용자가 존재하지 않음
 
 ---
 
@@ -146,14 +146,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 게시글 정보
-    - **400 Bad Request**: 유효하지 않은 입력
+  - **201 Created**: 생성된 게시글 정보
+  - **400 Bad Request**: 유효하지 않은 입력
 
 ### 2.2 게시글 조회
 - **GET** `/api/posts/{id}`
 - **Response**:
-    - **200 OK**: 게시글 정보
-    - **404 Not Found**: 게시글이 존재하지 않음
+  - **200 OK**: 게시글 정보
+  - **404 Not Found**: 게시글이 존재하지 않음
 
 ### 2.3 게시글 업데이트
 - **PUT** `/api/posts/{id}`
@@ -164,14 +164,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **200 OK**: 업데이트된 게시글 정보
-    - **404 Not Found**: 게시글이 존재하지 않음
+  - **200 OK**: 업데이트된 게시글 정보
+  - **404 Not Found**: 게시글이 존재하지 않음
 
 ### 2.4 게시글 삭제
 - **DELETE** `/api/posts/{id}`
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **404 Not Found**: 게시글이 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **404 Not Found**: 게시글이 존재하지 않음
 
 ---
 
@@ -188,14 +188,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 댓글 정보
-    - **400 Bad Request**: 유효하지 않은 입력
+  - **201 Created**: 생성된 댓글 정보
+  - **400 Bad Request**: 유효하지 않은 입력
 
 ### 3.2 댓글 조회
 - **GET** `/api/comments/{id}`
 - **Response**:
-    - **200 OK**: 댓글 정보
-    - **404 Not Found**: 댓글이 존재하지 않음
+  - **200 OK**: 댓글 정보
+  - **404 Not Found**: 댓글이 존재하지 않음
 
 ### 3.3 댓글 업데이트
 - **PUT** `/api/comments/{id}`
@@ -206,14 +206,14 @@ erDiagram
     }
     ```
 - **Response**:
-    - **200 OK**: 업데이트된 댓글 정보
-    - **404 Not Found**: 댓글이 존재하지 않음
+  - **200 OK**: 업데이트된 댓글 정보
+  - **404 Not Found**: 댓글이 존재하지 않음
 
 ### 3.4 댓글 삭제
 - **DELETE** `/api/comments/{id}`
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **404 Not Found**: 댓글이 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **404 Not Found**: 댓글이 존재하지 않음
 
 ---
 
@@ -228,15 +228,15 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 친구 관계 정보
-    - **400 Bad Request**: 유효하지 않은 입력
-    - **404 Not Found**: 사용자 중 하나가 존재하지 않음
+  - **201 Created**: 생성된 친구 관계 정보
+  - **400 Bad Request**: 유효하지 않은 입력
+  - **404 Not Found**: 사용자 중 하나가 존재하지 않음
 
 ### 4.2 내가 팔로우하는 사용자 조회
 - **GET** `/api/follow/following`
 - **Response**:
-    - **200 OK**: 내가 팔로우하는 사용자 목록
-    - **Content**:
+  - **200 OK**: 내가 팔로우하는 사용자 목록
+  - **Content**:
     ```json
     {
       "followingUsers": [
@@ -247,13 +247,13 @@ erDiagram
       ]
     }
     ```
-    - **404 Not Found**: 팔로우하는 사용자가 존재하지 않음
+  - **404 Not Found**: 팔로우하는 사용자가 존재하지 않음
 
 ### 4.3 나를 팔로우하는 사용자 조회
 - **GET** `/api/follow/follower`
 - **Response**:
-    - **200 OK**: 나를 팔로우하는 사용자 목록
-    - **Content**:
+  - **200 OK**: 나를 팔로우하는 사용자 목록
+  - **Content**:
     ```json
     {
       "followers": [
@@ -264,15 +264,15 @@ erDiagram
       ]
     }
     ```
-    - **404 Not Found**: 나를 팔로우하는 사용자가 존재하지 않음
+  - **404 Not Found**: 나를 팔로우하는 사용자가 존재하지 않음
 
 ### 4.4 친구 관계 삭제
 - **DELETE** `/api/follow`
 - **Request Header**:
-    - `Authorization`: 팔로우할 사용자의 ID
+  - `Authorization`: 팔로우할 사용자의 ID
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **404 Not Found**: 친구 관계가 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **404 Not Found**: 친구 관계가 존재하지 않음
 ---
 
 ## 5. 좋아요(Like) API
@@ -286,8 +286,8 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 좋아요 정보
-    - **400 Bad Request**: 유효하지 않은 입력
+  - **201 Created**: 생성된 좋아요 정보
+  - **400 Bad Request**: 유효하지 않은 입력
 
 ### 5.2 댓글 좋아요 생성
 - **POST** `/api/commentlikes`
@@ -298,43 +298,43 @@ erDiagram
     }
     ```
 - **Response**:
-    - **201 Created**: 생성된 좋아요 정보
-    - **400 Bad Request**: 유효하지 않은 입력
+  - **201 Created**: 생성된 좋아요 정보
+  - **400 Bad Request**: 유효하지 않은 입력
 
 ### 5.3 게시글 좋아요 수 조회
 - **GET** `/api/postlikes/{post_id}`
 - **Response**:
-    - **200 OK**: 게시글의 좋아요 수
-    - **Content**:
+  - **200 OK**: 게시글의 좋아요 수
+  - **Content**:
     ```json
     {
       "likeCount": "int"
     }
     ```
-    - **404 Not Found**: 게시글이 존재하지 않음
+  - **404 Not Found**: 게시글이 존재하지 않음
 
 ### 5.4 댓글 좋아요 수 조회
 - **GET** `/api/commentlikes/{comment_id}`
 - **Response**:
-    - **200 OK**: 댓글의 좋아요 수
-    - **Content**:
+  - **200 OK**: 댓글의 좋아요 수
+  - **Content**:
     ```json
     {
       "likeCount": "int"
     }
     ```
-    - **404 Not Found**: 댓글이 존재하지 않음
+  - **404 Not Found**: 댓글이 존재하지 않음
 
 ### 5.5 게시글 좋아요 삭제
 - **DELETE** `/api/postlikes/{id}`
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
-    - **404 Not Found**: 좋아요가 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
+  - **404 Not Found**: 좋아요가 존재하지 않음
 
 ### 5.6 댓글 좋아요 삭제
 - **DELETE** `/api/commentlikes/{id}`
 - **Response**:
-    - **204 No Content**: 삭제 성공
-    - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
-    - **404 Not Found**: 좋아요가 존재하지 않음
+  - **204 No Content**: 삭제 성공
+  - **403 Forbidden**: 내가 만든 좋아요가 아닌 경우
+  - **404 Not Found**: 좋아요가 존재하지 않음
