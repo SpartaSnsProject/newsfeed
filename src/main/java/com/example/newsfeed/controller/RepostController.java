@@ -23,7 +23,6 @@ public class RepostController {
     private final RepostService repostService;
 
     @PostMapping("/{originalPostId}")
-    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "리포스트 생성",
             description = "원본 포스트의 고유식별자로 로그인한 유저의 리포스트를 생성합니다.",
@@ -40,7 +39,6 @@ public class RepostController {
     }
 
     @PutMapping("/reposts/{repostId}")
-    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "리포스트 수정",
             description = "리포스트의 고유 식별자로 리포스트를 수정합니다.",
@@ -57,7 +55,6 @@ public class RepostController {
     }
 
     @DeleteMapping("/reposts/{repostId}")
-    @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "포스트 삭제",
             description = "리포스트의 고유식별자로 리포스트를 삭제합니다.",
