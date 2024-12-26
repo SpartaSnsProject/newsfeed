@@ -2,6 +2,7 @@ package com.example.newsfeed.service;
 
 import com.example.newsfeed.dto.friend.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
+import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
 import com.example.newsfeed.repository.FriendRepository;
 import com.example.newsfeed.repository.UserRepository;
@@ -51,5 +52,12 @@ public class FriendService {
         User followingUser = userRepository.findByDisplayName(followingId).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
 
         friendRepository.deleteByFollowerAndFollowing(followUser,followingUser);
+    }
+
+    public List<Long> getFollowingIds(User email) {
+        return friendRepository.findAllByFollower(email)
+                .stream()
+                .map(Friend::getId)
+                .collect(Collectors.toList());
     }
 }

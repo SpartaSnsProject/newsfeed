@@ -3,6 +3,7 @@ package com.example.newsfeed.repository;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface FriendRepository extends JpaRepository<Friend,Long> {
     List<Friend> findAllByFollower(User followUser);
 
     List<Friend> findAllByFollowing(User followingUser);
+
 }

@@ -13,7 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserService userService;
+    private final FriendService friendService;
 
     public PostResponseDto createPost(PostRequestDto requestDto, String email) {
         User user = getUserByEmail(email);
@@ -42,6 +46,7 @@ public class PostService {
     public List<PostResponseDto> findByDisplayName(String displayName) {
         List<Post> posts = postRepository.findByUser_DisplayName(displayName);
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getModifiedAt).reversed())
                 .map(PostMapper::toDto)
                 .toList();
     }
@@ -51,8 +56,22 @@ public class PostService {
         Long userId = getUserIdByEmail(email);
         List<Post> posts = postRepository.findByUser_Id(userId);
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getModifiedAt).reversed())
                 .map(PostMapper::toDto)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponseDto>  findTimeline(String email) {
+        User user = getUserByEmail(email);
+        Long userId = user.getId();
+        List<Long> friendIds = friendService.getFollowingIds(user);
+        List<Post> posts = postRepository.findPostsByUser_Id(userId, friendIds);
+
+        return posts.stream()
+                .sorted(Comparator.comparing(Post::getModifiedAt).reversed())
+                .map(PostMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     public PostResponseDto updatePost(PostRequestDto requestDto, Long postId, String email) {
