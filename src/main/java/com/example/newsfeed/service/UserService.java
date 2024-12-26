@@ -249,7 +249,7 @@ public class UserService {
         int size = all.size();
 
         for (long i = 1; i < size; i++) {
-            if (i==byEmail.getId()) {
+            if (!(i ==byEmail.getId())) {
                 numbers.add(i);
             }
         }
