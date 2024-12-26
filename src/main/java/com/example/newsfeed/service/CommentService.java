@@ -7,6 +7,7 @@ import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.entity.Comment;
 import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.entity.User;
+import com.example.newsfeed.exception.user.UserNotFoundException;
 import com.example.newsfeed.repository.CommentRepository;
 import com.example.newsfeed.repository.PostRepository;
 import com.example.newsfeed.repository.UserRepository;
@@ -89,7 +90,7 @@ public class CommentService {
     }
 
     public ResponseComment deleteComment(Long commentId, String username) {
-        User user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("유저못찾음익셉션"));
+        User user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("댓글못찾음익셉션"));
 
         if (user.getDisplayName().equals(comment.getDisplayName())) {

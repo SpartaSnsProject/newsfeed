@@ -3,6 +3,7 @@ package com.example.newsfeed.service;
 import com.example.newsfeed.dto.friend.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
+import com.example.newsfeed.exception.user.UserNotFoundException;
 import com.example.newsfeed.repository.FriendRepository;
 import com.example.newsfeed.repository.UserRepository;
 
@@ -18,14 +19,15 @@ import java.util.stream.Collectors;
 @Transactional
 public class FriendService {
     private final FriendRepository friendRepository;
-
+    private final UserService userService;
     private final UserRepository userRepository;
 
     public void addFriend(String displayName, String followUserEmail) {
 
-        User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+        userService.findByEmail(followUserEmail);
+        User followUser = userRepository.findByEmail(followUserEmail).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
-        User followingUser = userRepository.findByDisplayName(displayName).orElseThrow(() -> new RuntimeException("유저를 못찾음"));
+        User followingUser = userRepository.findByDisplayName(displayName).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
 
         if (followUser.getId() == followingUser.getId()) {
             throw new RuntimeException("자기자신을 팔로우할수없음 익셉션");
@@ -37,7 +39,7 @@ public class FriendService {
     }
 
     public List<ResponseFriend> getFollowing(String followEmail) {
-        User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new RuntimeException("유저 못찾음"));
+        User followUser = userRepository.findByEmail(followEmail).orElseThrow(() -> new UserNotFoundException("존재하지 않는 사용자입니다."));
         return friendRepository.findAllByFollower(followUser).stream()
                 .map(friend->ResponseFriend.from(friend.getFollower(),friend.getFollowing()))
                 .collect(Collectors.toList());

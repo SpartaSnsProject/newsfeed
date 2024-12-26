@@ -8,7 +8,6 @@ import com.example.newsfeed.entity.User;
 import com.example.newsfeed.exception.user.*;
 import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
-import com.example.newsfeed.util.postCont.PostMessages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -198,17 +197,18 @@ public class UserService {
     // 추가 (고예나)
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
     }
     // 추가 (고예나)
-    public User findUserByEmail(String email) {
+    // findUserByEmail 이름 적절치못함 수정(한성우)
+    public User findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
     }
     // 추가 (고예나)
     public Long findUserIdByEmail(String email) {
         User user = userRepository.findIdByEmail(email)
-                .orElseThrow(()-> new UserNotFoundException(PostMessages.USER_NOT_FOUND));
+                .orElseThrow(()-> new UserNotFoundException("존재하지 않는 사용자입니다."));
         return user.getId();
     }
 }

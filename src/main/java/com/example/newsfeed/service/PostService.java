@@ -74,7 +74,7 @@ public class PostService {
     }
 
     private User getUserByEmail(String email) {
-        return userService.findUserByEmail(email);
+        return userService.findByEmail(email);
     }
 
     private Long getUserIdByEmail(String email) {
