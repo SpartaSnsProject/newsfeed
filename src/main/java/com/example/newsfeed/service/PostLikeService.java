@@ -30,6 +30,6 @@ public class PostLikeService {
     }
 
     public void deletePostLike(Long userId, Long postId) {
-        postLikeRepository.deleteByPostIdAndUserId(postId, userId);
+        postLikeRepository.deleteByPost_PostIdAndUserId(postId, userId);
     }
 }

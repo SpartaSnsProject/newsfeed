@@ -1,6 +1,6 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.comment.RequestComment;
+
 import com.example.newsfeed.service.CommentLikeService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
