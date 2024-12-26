@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -76,14 +77,6 @@ public class UserController {
 
         return ResponseEntity.ok()
                 .body(ApiResponse.success("프로필 조회에 성공했습니다.", responseDto));
-    }
-
-    @GetMapping("/suggestion")
-    public ResponseEntity<ApiResponse<List<User>>> showSuggestion(
-            @AuthenticationPrincipal UserDetails userDetails) {
-        String username = userDetails.getUsername();
-        List<User> suggestion = userService.findSuggestion(username);
-        return ResponseEntity.ok().body(ApiResponse.success("랜덤 추천 유저 조회성공", suggestion));
     }
 
 

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,6 +71,28 @@ public class FriendService {
         followingUser.downFollowerCount();
         userService.save(followingUser);
         userService.save(followingUser);
+
+    }
+    public List<User> findSuggestion(String username) {
+        User byEmail = userService.findByEmail(username);
+        List<Long> numbers = new ArrayList<>();
+
+        List<User> all = userService.findAll();
+
+        int size = all.size();
+
+        for (long i = 1; i < size; i++) {
+            if (!(i ==byEmail.getId())) {
+                numbers.add(i);
+            }
+        }
+
+        Collections.shuffle(numbers);
+
+        List<Long> list = numbers.subList(0, 3);
+
+       return userService.findByIdIn(list);
+
 
     }
 }

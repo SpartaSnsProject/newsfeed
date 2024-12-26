@@ -112,7 +112,7 @@ public class PostService {
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글 입니다."));
     }
 
-    public List<Post> postSuggestion(String username) {
+    public List<PostResponseDto> postSuggestion(String username) {
         User byEmail = userService.findByEmail(username);
         List<Long> numbers = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class PostService {
             }
         }
         Collections.shuffle(numbers);
-        List<Long> list = numbers.subList(0, 2);
-        return postRepository.findAllByPostIdIn(list);
+        List<Long> list = numbers.subList(0, 10);
+        return postRepository.findAllByPostIdIn(list).stream().map(PostResponseDto::from).toList();
     }
 }

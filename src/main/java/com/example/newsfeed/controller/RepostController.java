@@ -34,7 +34,10 @@ public class RepostController {
             @PathVariable Long originalPostId
     ) {
         String email = userDetails.getUsername();
+
         CreateRePostResponse responseDto = repostService.toggleRepost(requestDto, email, originalPostId);
+
+        System.out.println("아니면 여기야?");
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 

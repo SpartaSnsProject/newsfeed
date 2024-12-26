@@ -10,6 +10,7 @@ import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -241,20 +242,12 @@ public class UserService {
         userRepository.delete(user);
     }
 
-    public List<User> findSuggestion(String username) {
-        User byEmail = findByEmail(username);
-        List<Long> numbers = new ArrayList<>();
 
-        List<User> all = userRepository.findAll();
-        int size = all.size();
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
 
-        for (long i = 1; i < size; i++) {
-            if (!(i ==byEmail.getId())) {
-                numbers.add(i);
-            }
-        }
-        Collections.shuffle(numbers);
-        List<Long> list = numbers.subList(0, 2);
+    public List<User> findByIdIn(List<Long> list) {
         return userRepository.findAllByIdIn(list);
     }
 }
