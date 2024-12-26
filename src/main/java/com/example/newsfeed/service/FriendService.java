@@ -3,6 +3,7 @@ package com.example.newsfeed.service;
 import com.example.newsfeed.dto.friend.ResponseFriend;
 import com.example.newsfeed.entity.Friend;
 import com.example.newsfeed.entity.User;
+import com.example.newsfeed.exception.NotFoundException;
 import com.example.newsfeed.repository.FriendRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -85,6 +86,9 @@ public class FriendService {
             if (!(i ==byEmail.getId())) {
                 numbers.add(i);
             }
+        }
+        if (numbers.size() < 3) {
+            throw new NotFoundException("서버에 유저가 3명 미만입니다.");
         }
 
         Collections.shuffle(numbers);
