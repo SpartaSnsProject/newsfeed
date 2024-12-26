@@ -136,4 +136,9 @@ public class PostService {
 
         return postRepository.findAllByPostIdIn(list).stream().map(PostResponseDto::from).toList();
     }
+
+    public List<PostResponseDto> findAll() {
+        List<Post> all = postRepository.findAll();
+        return all.stream().map(PostResponseDto::from).toList();
+    }
 }

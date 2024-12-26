@@ -83,8 +83,14 @@ public class PostController {
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<PostResponseDto>> findAll() {
+        return new ResponseEntity<>(postService.findAll(),HttpStatus.OK);
+    }
+
     @GetMapping("/suggestion")
     public ResponseEntity<List<PostResponseDto>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
+
         String username = userDetails.getUsername();
         List<PostResponseDto> postResponseDtos = postService.postSuggestion(username);
         return new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
