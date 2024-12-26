@@ -25,7 +25,6 @@ public class RepostService {
         Post post = new Post(user, requestDto.getContent(), originalPost);
 
         postService.save(post);
-
         return CreateRePostResponse.from(post);
 
     }

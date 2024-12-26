@@ -121,12 +121,12 @@ public class PostService {
         int size = all.size();
 
         for (long i = 1; i < size; i++) {
-            if (i==byEmail.getId()) {
+            if (!(i ==byEmail.getId())) {
                 numbers.add(i);
             }
         }
         Collections.shuffle(numbers);
         List<Long> list = numbers.subList(0, 2);
-        return postRepository.findAllByIdIn(list);
+        return postRepository.findAllByPostIdIn(list);
     }
 }
