@@ -9,6 +9,7 @@ import com.example.newsfeed.exception.user.*;
 import com.example.newsfeed.repository.UserRepository;
 import com.example.newsfeed.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
