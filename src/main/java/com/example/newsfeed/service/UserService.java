@@ -176,9 +176,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(String displayName, String email) {
+    public void deleteUser(String displayName, String email, String password) {
         // 1. 대상 사용자 확인
-        // 추가 리펙토링(한성우)
         User user = findByDisplayName(displayName);
 
         // 2. 현재 로그인한 사용자 확인
@@ -195,7 +194,12 @@ public class UserService {
             throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
         }
 
-        // 5. 소프트 딜리트 수행
+        // 5. 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 6. 소프트 딜리트 수행
         user.setIsDeleted(true);
     }
     // 추가 (고예나)
