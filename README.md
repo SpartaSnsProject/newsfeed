@@ -3,11 +3,11 @@
 2. [Wireframe](#wireframe)
 3. [Erd](#erd)
 4. [API 명세서](#api-명세서)
-   1. [1. 사용자(User) API](#1-사용자user-api)
-   2. [2. 게시글(Post) API](#2-게시글post-api)
-   3. [3. 댓글(Comment) API](#3-댓글comment-api)
-   4. [4. 친구(Comment) API](#4-친구friend-api)
-   5. [5. 좋아요(Like) API](#5-좋아요like-api)
+    1. [1. 사용자(User) API](#1-사용자user-api)
+    2. [2. 게시글(Post) API](#2-게시글post-api)
+    3. [3. 댓글(Comment) API](#3-댓글comment-api)
+    4. [4. 친구(Comment) API](#4-친구friend-api)
+    5. [5. 좋아요(Like) API](#5-좋아요like-api)
 
 # Commit Message Convention
 
@@ -117,7 +117,7 @@ erDiagram
 
 ### 1.3 사용자 업데이트
 - **PUT** `/api/users/{id}`
-- **Request Body**: 
+- **Request Body**:
     ```json
     {
       "displayName": "string",
@@ -137,7 +137,7 @@ erDiagram
 
 ### 1.5 비밀번호 변경
 - **PUT** `/api/password/{id}`
-- **Request Body**: 
+- **Request Body**:
     ```json
     {
       "password": "string",
