@@ -2,7 +2,6 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.like.PostLikeResponse;
 import com.example.newsfeed.dto.like.RequestPost;
-import com.example.newsfeed.service.PostLikeService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
