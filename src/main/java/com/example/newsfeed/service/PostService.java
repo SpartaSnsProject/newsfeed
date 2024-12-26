@@ -114,19 +114,19 @@ public class PostService {
 
     public List<Post> postSuggestion(String username) {
         User byEmail = userService.findByEmail(username);
-        List<Integer> numbers = new ArrayList<>();
+        List<Long> numbers = new ArrayList<>();
 
         List<Post> all = postRepository.findAll();
 
         int size = all.size();
 
-        for (int i = 1; i < size; i++) {
+        for (long i = 1; i < size; i++) {
             if (i==byEmail.getId()) {
                 numbers.add(i);
             }
         }
         Collections.shuffle(numbers);
-        List<Integer> list = numbers.subList(0, 2);
+        List<Long> list = numbers.subList(0, 2);
         return postRepository.findAllByIdIn(list);
     }
 }
