@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 @Tag(name = "Post", description = "포스트 관련 API")
 public class PostController {
