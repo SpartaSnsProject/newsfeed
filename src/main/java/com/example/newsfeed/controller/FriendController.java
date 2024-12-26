@@ -1,6 +1,7 @@
 package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.friend.ResponseFriend;
+import com.example.newsfeed.entity.User;
 import com.example.newsfeed.service.FriendService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/follow")
+@RequestMapping("/api/follow")
 public class FriendController {
 
     FriendService friendService;
@@ -39,6 +40,16 @@ public class FriendController {
         friendService.addFriend(displayName,username);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/suggestion")
+    public ResponseEntity<List<User>> showSuggestion(
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        String username = userDetails.getUsername();
+        List<User> suggestion = friendService.findSuggestion(username);
+
+        return new ResponseEntity<>(suggestion, HttpStatus.OK);
     }
 
     @Operation(summary = "팔로윙유저조회",

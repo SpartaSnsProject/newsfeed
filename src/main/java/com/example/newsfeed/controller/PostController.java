@@ -84,10 +84,10 @@ public class PostController {
     }
 
     @GetMapping("/suggestion")
-    public ResponseEntity<ApiResponse<List<Post>>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<List<PostResponseDto>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
         String username = userDetails.getUsername();
-        List<Post> posts = postService.postSuggestion(username);
-        return ResponseEntity.ok(ApiResponse.success("랜덤 게시글 10개 조회성공", posts));
+        List<PostResponseDto> postResponseDtos = postService.postSuggestion(username);
+        return new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
