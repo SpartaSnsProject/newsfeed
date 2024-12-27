@@ -134,4 +134,17 @@ public class UserController {
 
         return ResponseEntity.ok(ApiResponse.success("회원 탈퇴가 완료되었습니다.", null));
     }
+
+    @Operation(
+            summary = "로그아웃",
+            description = "사용자를 로그아웃 처리합니다.",
+            security = { @SecurityRequirement(name = "Bearer Authentication") }
+    )
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse<String>> logout(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestHeader("Authorization") String token) {
+        userService.logout(userDetails.getUsername(), token.substring(7));
+        return ResponseEntity.ok(ApiResponse.success("로그아웃이 완료되었습니다.", null));
+    }
 }
