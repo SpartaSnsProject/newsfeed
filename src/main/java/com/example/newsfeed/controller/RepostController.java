@@ -37,7 +37,6 @@ public class RepostController {
 
         CreateRePostResponse responseDto = repostService.toggleRepost(requestDto, email, originalPostId);
 
-        System.out.println("아니면 여기야?");
         return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
     }
 
