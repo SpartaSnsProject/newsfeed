@@ -57,7 +57,7 @@ public class PostService {
 
     private void validatePostOwnership(Post post, Long userId) {
         if (!post.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("게시글에 수정 권한이 없습니다.");
+            throw new ForbiddenException("게시글 수정/삭제 권한이 없습니다.");
         }
     }
 
@@ -124,9 +124,9 @@ public class PostService {
         return postRepository.findAllByPostIdIn(list).stream().map(PostResponseDto::from).toList();
     }
 
-    public List<PostResponseDto> findAll() {
-        List<Post> all = postRepository.findAll();
-        return all.stream().map(PostResponseDto::from).toList();
+    public Page<PostResponseDto> findAll(Pageable pageable) {
+        Page<Post> all = postRepository.findAll(pageable);
+        return all.map(PostResponseDto::from);
     }
 
     @Transactional(readOnly = true)
