@@ -54,28 +54,18 @@ public class PostService {
 
         postRepository.delete(post);
     }
-    //불필요한 메서드 제거예정(한성우)
-//
-//    private User getUserByEmail(String email) {
-//        return userService.findByEmail(email);
-//    }
-//
-//    private Long getUserIdByEmail(String email) {
-//        return userService.findUserIdByEmail(email);
-//    }
 
-    //검증 예외객체,메시지 변경(한성우)
     private void validatePostOwnership(Post post, Long userId) {
         if (!post.getUser().getId().equals(userId)) {
             throw new ForbiddenException("게시글에 수정 권한이 없습니다.");
         }
     }
 
-    public void save(Post post){
+    public void save(Post post) {
         postRepository.save(post);
     }
 
-    public void delete(Post post){
+    public void delete(Post post) {
         postRepository.delete(post);
     }
 
@@ -88,23 +78,17 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    //메서드 이름변경 findByDisplayName -> findAllByDisplayName (한성우)0
-    public List<PostResponseDto> findAllByDisplayName(String displayName) {
-        List<Post> posts = postRepository.findAllByUser_DisplayName(displayName);
-        return posts.stream()
-                .map(PostResponseDto::from)
-                .toList();
+    public Page<PostResponseDto> findAllByDisplayName(String displayName, Pageable pageable) {
+        Page<Post> posts = postRepository.findAllByUser_DisplayName(displayName, pageable);
+        return posts.map(PostResponseDto::from);
     }
 
     @Transactional(readOnly = true)
-    public List<PostResponseDto> findAllPosts(String email) {
-
+    public Page<PostResponseDto> findAllPosts(String email, Pageable pageable) {
         Long userId = userService.findUserIdByEmail(email);
 
-        List<Post> posts = postRepository.findByUser_Id(userId);
-        return posts.stream()
-                .map(PostResponseDto::from)
-                .toList();
+        Page<Post> posts = postRepository.findByUser_Id(userId, pageable);
+        return posts.map(PostResponseDto::from);
     }
 
     @Transactional(readOnly = true)
@@ -113,7 +97,6 @@ public class PostService {
         return PostResponseDto.from(post);
     }
 
-    //메서드명(기존이름) getPostById 직관적이지 않음 변경
     public Post findById(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 게시글 입니다."));
@@ -122,14 +105,12 @@ public class PostService {
     public List<PostResponseDto> postSuggestion(String username) {
         User byEmail = userService.findByEmail(username);
         List<Long> numbers = new ArrayList<>();
-
         List<Post> all = postRepository.findAll();
 
         int size = all.size();
 
-
         for (long i = 1; i < size; i++) {
-            if (!(i ==byEmail.getId())) {
+            if (!(i == byEmail.getId())) {
                 numbers.add(i);
             }
         }
@@ -138,7 +119,6 @@ public class PostService {
         }
 
         Collections.shuffle(numbers);
-
         List<Long> list = numbers.subList(0, 10);
 
         return postRepository.findAllByPostIdIn(list).stream().map(PostResponseDto::from).toList();
@@ -150,11 +130,12 @@ public class PostService {
     }
 
     @Transactional(readOnly = true)
-    public Page<PostResponseDto>  findTimeline(String email, Pageable pageable) {
+    public Page<PostResponseDto> findTimeline(String email, Pageable pageable) {
         User user = userService.findByEmail(email);
         Long userId = user.getId();
+
         List<Long> friendIds = friendService.findFollowingIds(user);
-        Page<Post> posts = postRepository.findUserAndFollowingPosts(userId,friendIds, pageable);
+        Page<Post> posts = postRepository.findUserAndFollowingPosts(userId, friendIds, pageable);
 
         return posts.map(PostResponseDto::from);
     }
