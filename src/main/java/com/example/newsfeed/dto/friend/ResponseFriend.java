@@ -2,7 +2,9 @@ package com.example.newsfeed.dto.friend;
 
 import com.example.newsfeed.entity.User;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Builder
 public class ResponseFriend {
     private final User follower;

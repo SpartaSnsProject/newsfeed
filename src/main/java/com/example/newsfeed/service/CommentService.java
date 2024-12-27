@@ -33,7 +33,7 @@ public class CommentService {
 
         if (requestComment.getCommentId() == null && requestComment.getPostId() == null) {
             throw new RuntimeException("요청 제대로 안함 익셉션");
-        } else if (requestComment.getCommentId() == null) {
+        } else if (requestComment.getCommentId() == 0) {
 
             Post byId = postService.findById(requestComment.getPostId());
 
@@ -42,7 +42,7 @@ public class CommentService {
             byId.upCommentCount();
 
             return ResponseComment.from(save);
-        } else if (requestComment.getPostId() == null) {
+        } else if (requestComment.getPostId() == 0) {
             Comment comment = findById(requestComment.getCommentId());
             Comment save = commentRepository.save(new Comment(displayName, comment, requestComment.getContents()));
             comment.upReCommentCount();
