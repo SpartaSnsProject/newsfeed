@@ -73,11 +73,10 @@ public class PostController {
         return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/my_post")
     @Operation(
             summary = "포스트 목록 조회",
-            description = "로그인한 유저의 포스트 목록을 조회합니다.",
-            security = {@SecurityRequirement(name = "Bearer Authentication")}
+            description = "로그인한 유저의 포스트 목록을 조회합니다."
     )
     public ResponseEntity<Page<PostResponseDto>> findAllPosts(
             @AuthenticationPrincipal UserDetails userDetails,
@@ -88,8 +87,14 @@ public class PostController {
         return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<PostResponseDto>> findAll() {
+        return new ResponseEntity<>(postService.findAll(),HttpStatus.OK);
+    }
+
     @GetMapping("/suggestion")
     public ResponseEntity<List<PostResponseDto>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
+
         String username = userDetails.getUsername();
         List<PostResponseDto> postResponseDtos = postService.postSuggestion(username);
         return new ResponseEntity<>(postResponseDtos, HttpStatus.OK);
