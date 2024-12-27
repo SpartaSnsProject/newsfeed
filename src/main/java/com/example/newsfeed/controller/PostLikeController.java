@@ -19,7 +19,7 @@ public class PostLikeController {
 
     private final PostLikeService postLikeService;
 
-    @Operation(summary = "게시물좋아요추가",
+    @Operation(summary = "게시물 좋아요 추가",
             description = "게시물에 좋아요를 추가합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @PostMapping("/{post_id}")
@@ -32,8 +32,8 @@ public class PostLikeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @Operation(summary = "게시물좋아요",
-            description = "게시물에 좋아요를 추가합니다.",
+    @Operation(summary = "게시물 좋아요 확인",
+            description = "게시물에 좋아요를 확인합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/{post_id}")
     public ResponseEntity<Integer> getCommentLIke(
@@ -43,7 +43,7 @@ public class PostLikeController {
         return new ResponseEntity<>(commentLike,HttpStatus.OK);
     }
 
-    @Operation(summary = "게시물좋아요삭제.",
+    @Operation(summary = "게시물 좋아요 삭제",
             description = "게시물에 좋아요를 삭제합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @DeleteMapping("/{post_id}")

@@ -46,11 +46,11 @@ public class FriendController {
     @Operation(summary = "팔로우할 유저 제안",
             description = "팔로우할 유저를 제안 합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
-    public ResponseEntity<List<User>> showSuggestion(
+    public ResponseEntity<List<String>> showSuggestion(
             @AuthenticationPrincipal UserDetails userDetails) {
 
         String username = userDetails.getUsername();
-        List<User> suggestion = friendService.findSuggestion(username);
+        List<String> suggestion = friendService.findSuggestion(username);
 
         return new ResponseEntity<>(suggestion, HttpStatus.OK);
     }

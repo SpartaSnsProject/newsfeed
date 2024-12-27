@@ -76,7 +76,7 @@ public class FriendService {
         userService.save(followingUser);
 
     }
-    public List<User> findSuggestion(String username) {
+    public List<String> findSuggestion(String username) {
         User byEmail = userService.findByEmail(username);
         List<Long> numbers = new ArrayList<>();
 
@@ -97,9 +97,12 @@ public class FriendService {
 
         List<Long> list = numbers.subList(0, 3);
 
-       return userService.findByIdIn(list);
-
-
+        List<User> byIdIn = userService.findByIdIn(list);
+        List<String> strings = new ArrayList<>();
+        for (User user : byIdIn) {
+            strings.add(user.getDisplayName());
+        }
+        return strings;
     }
 
     public List<Long> findFollowingIds(User user){
