@@ -1,5 +1,6 @@
 package com.example.newsfeed.entity;
 
+import com.example.newsfeed.exception.WrongAccessException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -100,17 +101,17 @@ public class User extends BaseEntity {
         followersCount++;
     }
     public void downFollowingCount(){
-        if (followingCount <= 0) {
+        if (followingCount >= 0) {
             followingCount--;
         } else {
-            throw new RuntimeException("팔로잉은 마이너스가 없소 익셉션");
+            throw new WrongAccessException("팔로잉은 마이너스가 없습니다.");
         }
     }
     public void downFollowerCount() {
-        if (followersCount <= 0) {
+        if (followersCount >= 0) {
             followersCount--;
         } else {
-            throw new RuntimeException("팔로워는 마이너스가 없소 익셉션");
+            throw new WrongAccessException("팔로워는 마이너스가 없습니다.");
         }
 
     }

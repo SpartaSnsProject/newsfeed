@@ -64,6 +64,7 @@ public class FriendService {
 
     public void deleteFriend(String followEmail, String followingId) {
         User followUser = userService.findByEmail(followEmail);
+
         User followingUser = userService.findByDisplayName(followingId);
 
         friendRepository.deleteByFollowerAndFollowing(followUser,followingUser);

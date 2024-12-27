@@ -69,11 +69,10 @@ public class PostController {
         return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/my_post")
     @Operation(
             summary = "포스트 목록 조회",
-            description = "로그인한 유저의 포스트 목록을 조회합니다.",
-            security = {@SecurityRequirement(name = "Bearer Authentication")}
+            description = "로그인한 유저의 포스트 목록을 조회합니다."
     )
     public ResponseEntity<PostListResponseDto> findAllPosts(
             @AuthenticationPrincipal UserDetails userDetails

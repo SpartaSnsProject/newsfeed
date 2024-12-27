@@ -93,7 +93,9 @@ public class PostService {
 
     @Transactional(readOnly = true)
     public List<PostResponseDto> findAllPosts(String email) {
+
         Long userId = userService.findUserIdByEmail(email);
+
         List<Post> posts = postRepository.findByUser_Id(userId);
         return posts.stream()
                 .map(PostResponseDto::from)
