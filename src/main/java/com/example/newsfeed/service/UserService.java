@@ -202,6 +202,17 @@ public class UserService {
         // 6. 소프트 딜리트 수행
         user.setIsDeleted(true);
     }
+
+    @Transactional
+    public void logout(String email, String token) {
+        User user = findByEmail(email);
+
+        if (user.isDeleted()) {
+            throw new IllegalArgumentException("이미 탈퇴한 회원입니다.");
+        }
+
+        log.info("User logged out successfully: {}", email);
+    }
     // 추가 (고예나)
     public User findById(Long userId) {
         return userRepository.findById(userId)
