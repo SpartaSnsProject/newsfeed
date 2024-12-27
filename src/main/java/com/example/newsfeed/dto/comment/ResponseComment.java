@@ -14,7 +14,7 @@ public class ResponseComment {
 
     public static ResponseComment from(Comment comment) {
         return ResponseComment.builder()
-                .displayName(comment.getDisplayName())
+                .displayName(comment.getPost().getUser().getDisplayName())
                 .contents(comment.getContents())
                 .build();
     }

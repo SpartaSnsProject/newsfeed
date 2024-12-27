@@ -20,13 +20,11 @@ public class RepostService {
 
     public CreateRePostResponse toggleRepost(PostRequestDto requestDto, String email, Long originalPostId) {
         User user = userService.findByEmail(email);
-        System.out.println("여기");
-        System.out.println(requestDto.getContent());
+
         Post originalPost = postService.findById(originalPostId);
         Post post = new Post(user, requestDto.getContent(), originalPost);
-        System.out.println("요기?");
         postService.save(post);
-        System.out.println("요기???");
+
         return CreateRePostResponse.from(post);
 
     }
