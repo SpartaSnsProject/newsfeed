@@ -27,7 +27,7 @@ public class FriendController {
         this.friendService = friendSerivce;
     }
 
-    @Operation(summary = "팔로우추가",
+    @Operation(summary = "팔로우 추가",
             description = "팔로우를 추가합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @PostMapping("/{display_name}")
@@ -43,6 +43,9 @@ public class FriendController {
     }
 
     @GetMapping("/suggestion")
+    @Operation(summary = "팔로우할 유저 제안",
+            description = "팔로우할 유저를 제안 합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     public ResponseEntity<List<User>> showSuggestion(
             @AuthenticationPrincipal UserDetails userDetails) {
 
@@ -52,7 +55,7 @@ public class FriendController {
         return new ResponseEntity<>(suggestion, HttpStatus.OK);
     }
 
-    @Operation(summary = "팔로윙유저조회",
+    @Operation(summary = "팔로윙 유저 조회",
             description = "내가 팔로윙중인 유저를 찾습니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/following")
@@ -69,7 +72,7 @@ public class FriendController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "팔로워찾기",
+    @Operation(summary = "팔로워 찾기",
             description = "나를 팔로잉중인 팔로워를 찾습니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/follower")
@@ -84,7 +87,7 @@ public class FriendController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "팔로우삭제",
+    @Operation(summary = "팔로우 삭제",
             description = "팔로우를 삭제합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")})
     @DeleteMapping("/{display_name}")

@@ -1,6 +1,5 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.post.PostListResponseDto;
 import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.PostResponseDto;
 import com.example.newsfeed.service.PostService;
@@ -87,12 +86,21 @@ public class PostController {
         return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
+
     @GetMapping("/all")
+    @Operation(
+            summary = "포스트 전체 목록 조회",
+            description = "모든 유저의 포스트 목록을 조회합니다."
+    )
     public ResponseEntity<List<PostResponseDto>> findAll() {
         return new ResponseEntity<>(postService.findAll(),HttpStatus.OK);
     }
 
     @GetMapping("/suggestion")
+    @Operation(
+            summary = "랜덤 포스트 조회",
+            description = "랜덤으로 포스트 조회합니다."
+    )
     public ResponseEntity<List<PostResponseDto>> postSuggestion(@AuthenticationPrincipal UserDetails userDetails) {
 
         String username = userDetails.getUsername();
