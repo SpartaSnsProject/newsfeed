@@ -1,16 +1,18 @@
 package com.example.newsfeed.controller;
 
-import com.example.newsfeed.dto.common.ApiResponse;
 import com.example.newsfeed.dto.post.PostListResponseDto;
 import com.example.newsfeed.dto.post.PostRequestDto;
 import com.example.newsfeed.dto.post.PostResponseDto;
-import com.example.newsfeed.entity.Post;
 import com.example.newsfeed.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -61,12 +63,14 @@ public class PostController {
             summary = "포스트 목록 조회",
             description = "유저 핸들아이디로 포스트 목록를 조회합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")}
+
     )
-    public ResponseEntity<PostListResponseDto> findByDisplayId(
-            @PathVariable String displayName
+    public ResponseEntity<Page<PostResponseDto>> findByDisplayId(
+            @PathVariable String displayName,
+            @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findAllByDisplayName(displayName));
-        return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
+        Page<PostResponseDto> postResponseDtoPage = postService.findAllByDisplayName(displayName, pageable);
+        return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
     @GetMapping
@@ -75,12 +79,13 @@ public class PostController {
             description = "로그인한 유저의 포스트 목록을 조회합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")}
     )
-    public ResponseEntity<PostListResponseDto> findAllPosts(
-            @AuthenticationPrincipal UserDetails userDetails
+    public ResponseEntity<Page<PostResponseDto>> findAllPosts(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         String email = userDetails.getUsername();
-        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findAllPosts(email));
-        return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
+        Page<PostResponseDto> postResponseDtoPage = postService.findAllPosts(email, pageable);
+        return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
     @GetMapping("/suggestion")
@@ -96,12 +101,13 @@ public class PostController {
             description = "로그인한 유저의 포스트 목록을 조회합니다.",
             security = {@SecurityRequirement(name = "Bearer Authentication")}
     )
-    public ResponseEntity<PostListResponseDto> findTimeline(
-            @AuthenticationPrincipal UserDetails userDetails
+    public ResponseEntity<Page<PostResponseDto>> findTimeline(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PageableDefault(size = 10, sort = "modifiedAt", direction = Sort.Direction.DESC) Pageable pageable
     ){
         String email = userDetails.getUsername();
-        PostListResponseDto postListResponseDto = new PostListResponseDto(postService.findTimeline(email));
-        return new ResponseEntity<>(postListResponseDto, HttpStatus.OK);
+        Page<PostResponseDto> postResponseDtoPage = postService.findTimeline(email, pageable);
+        return new ResponseEntity<>(postResponseDtoPage, HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
