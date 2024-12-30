@@ -25,6 +25,7 @@ public class UserSignupRequestDto {
             message = "비밀번호는 8-20자이며, 영문자, 숫자, 특수문자를 포함해야 합니다.")
     private String password;
 
+    private String displayName;
     private String bio;
     private LocalDate birthDate;
 }
