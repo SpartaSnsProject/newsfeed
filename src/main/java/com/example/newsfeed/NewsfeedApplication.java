@@ -11,8 +11,5 @@ public class NewsfeedApplication {
     public static void main(String[] args) {
         SpringApplication.run(NewsfeedApplication.class, args);
     }
-<<<<<<< HEAD
-=======
 
->>>>>>> dev
 }
