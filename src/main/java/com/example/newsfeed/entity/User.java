@@ -1,5 +1,6 @@
 package com.example.newsfeed.entity;
 
+import com.example.newsfeed.exception.WrongAccessException;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Setter
 @Getter
 @NoArgsConstructor
 @Entity
@@ -49,7 +49,6 @@ public class User extends BaseEntity {
     @Column(name = "tweets_count")
     private int tweetsCount = 0;
 
-    @Setter
     @Column(name = "is_deleted")
     private boolean isDeleted = false;
 
@@ -93,5 +92,27 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void upFollowingCount() {
+        followingCount++;
+    }
+    public void upFollowerCount(){
+        followersCount++;
+    }
+    public void downFollowingCount(){
+        if (followingCount >= 0) {
+            followingCount--;
+        } else {
+            throw new WrongAccessException("팔로잉은 마이너스가 없습니다.");
+        }
+    }
+    public void downFollowerCount() {
+        if (followersCount >= 0) {
+            followersCount--;
+        } else {
+            throw new WrongAccessException("팔로워는 마이너스가 없습니다.");
+        }
+
     }
 }

@@ -2,11 +2,10 @@ package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.List;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 @Entity
 public class Friend {
     @Id
@@ -14,15 +13,12 @@ public class Friend {
     long id;
 
     @ManyToOne
-    @JoinColumn(name = "following_user")
+    @JoinColumn(name = "following_id")
     User following;
 
     @ManyToOne
-    @JoinColumn(name = "follower_user")
+    @JoinColumn(name = "follower_id")
     User follower;
-
-    public Friend() {
-    }
 
     public Friend(User follower, User following) {
         this.follower = follower;

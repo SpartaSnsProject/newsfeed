@@ -1,8 +1,10 @@
 package com.example.newsfeed.entity;
 
 import jakarta.persistence.*;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor
 public class PostLike {
 
     @Id
@@ -15,9 +17,6 @@ public class PostLike {
 
     @Column(unique = true)
     Long userId;
-
-    public PostLike() {
-    }
 
     public PostLike(Post post, Long userId) {
         this.post = post;

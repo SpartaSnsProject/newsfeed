@@ -3,8 +3,11 @@ package com.example.newsfeed.controller;
 
 import com.example.newsfeed.dto.comment.RequestPatchComment;
 import com.example.newsfeed.dto.comment.ResponseComment;
-import com.example.newsfeed.dto.like.RequestComment;
+import com.example.newsfeed.dto.comment.RequestComment;
 import com.example.newsfeed.service.CommentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping
+@RequestMapping("/comment")
 public class CommentController {
 
     CommentService commentService;
@@ -25,8 +28,11 @@ public class CommentController {
         this.commentService = commentService;
     }
 
+    @Operation(summary = "댓글추가",
+            description = "새로운 댓글을 추가합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @PostMapping
-    public ResponseEntity<ResponseComment> addComment(@RequestBody RequestComment requestComment) {
+    public ResponseEntity<ResponseComment> addComment(@Valid @RequestBody RequestComment requestComment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
@@ -35,6 +41,9 @@ public class CommentController {
         return new ResponseEntity<>(responseComment, HttpStatus.CREATED);
     }
 
+    @Operation(summary = "게시물의 댓글조회",
+            description = "게시물에 있는 댓글을 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/post/{post_id}")
     public ResponseEntity<Map<String, List<ResponseComment>>> getCommentByPost(@PathVariable("post_id") Long postId) {
         List<ResponseComment> commentByPost = commentService.getCommentByPost(postId);
@@ -43,6 +52,9 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "댓글의 댓글조회",
+            description = "댓글에 있는 댓글을 조회합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @GetMapping("/comment/{comment_id}")
     public ResponseEntity<Map<String, List<ResponseComment>>> getCommentByComment(@PathVariable("comment_id") Long commentId) {
         List<ResponseComment> commentByComment = commentService.getCommentByComment(commentId);
@@ -52,8 +64,11 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Operation(summary = "댓글 수정",
+            description = "댓글을 수정합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @PatchMapping
-    public ResponseEntity<ResponseComment> updateComment(@RequestBody RequestPatchComment comment) {
+    public ResponseEntity<ResponseComment> updateComment(@Valid @RequestBody RequestPatchComment comment) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
@@ -61,12 +76,15 @@ public class CommentController {
         return new ResponseEntity<>(responseComment, HttpStatus.OK);
     }
 
+    @Operation(summary = "댓글 삭제",
+            description = "댓글을 삭제합니다.",
+            security = {@SecurityRequirement(name = "Bearer Authentication")})
     @DeleteMapping("/{comment_id}")
     public ResponseEntity<ResponseComment> deleteComment(@PathVariable("comment_id")Long commentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
 
         ResponseComment responseComment = commentService.deleteComment(commentId, username);
-       return new ResponseEntity<>(responseComment, HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(responseComment, HttpStatus.NO_CONTENT);
     }
 }

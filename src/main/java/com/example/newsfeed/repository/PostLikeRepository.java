@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface PostLikeRepository extends JpaRepository<PostLike,Long> {
-    List<PostLike> findByPostId(Long postId);
+    List<PostLike> findByPost_PostId(Long postId);
 
-    void deleteByPostIdAndUserId(Long postId, Long userId);
+    void deleteByPost_PostIdAndUserId(Long postId, Long userId);
 }
